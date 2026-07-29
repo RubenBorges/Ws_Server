@@ -165,12 +165,11 @@ void handleDataSync(data::dataTransaction &tx) {
   //NEW FILE CREATION
   case data::OP::NEW: {
     dataLogBuilder.push_back(std::format(
-        "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Crawl processing initiated.",
+        "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated.",
         std::chrono::system_clock::now()));
-
-    DirectoryCrawler dr(tx.targetPath.string());
-    dr.crawlRecursively(activeServerFilePaths);
-    tx.status = data::Result::SUCCESS;
+    auto res = bpy::utility::createEmptyFile(tx.targetPath);
+    res == true? tx.fileResult=data::FileResult::SUCCESS:tx.fileResult=data::FileResult::OPEN_FAILURE;
+    tx.status = (tx.fileResult == data::FileResult::SUCCESS)? data::Result::SUCCESS : data::Result::FAILURE;
     break;
   }
 

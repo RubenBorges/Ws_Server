@@ -3,13 +3,14 @@
 #include <algorithm> // For std::min and std::max
 #include <cerrno>    // For tracking kernel error flags
 #include <concepts>
+#include <filesystem>
 #include <cstring> // For std::strerror
 #include <fcntl.h> // For AT_FDCWD and AT_REMOVEDIR flags [1]
 #include <iostream>
 #include <random>
 #include <sys/stat.h>
 #include <sys/syscall.h> // For SYS_unlinkat macro definitions [1]
-#include <type_traits>
+#include <fstream>
 #include <unistd.h> // For syscall() definitions
 
 namespace bpy {
@@ -46,6 +47,19 @@ bool removeTargetViaSyscall(const std::string &pathTarget) {
   return false; // If it failed, the global 'errno' variable holds the exact
                 // kernel failure reason
 };
+bool createEmptyFile(const std::filesystem::path& filePath) {
+
+    if (filePath.has_parent_path()) {     // 1. Optional: Ensure the folder structure leading up to the file exists
+        std::filesystem::create_directories(filePath.parent_path());
+    }
+    std::ofstream file(filePath);    // 2. Open the stream. Opening in output mode automatically creates the file if it's missing.
+    if (file.is_open()) {std::cout << "File created successfully: " << filePath << "\n";
+    } else{
+        std::cerr << "Failed to create file: " << filePath << "\n";
+        return false;
+    }
+    return true;
+}
 
 // 1. Constrain T using concepts to be either purely integral OR floating_point
 template <typename T>
