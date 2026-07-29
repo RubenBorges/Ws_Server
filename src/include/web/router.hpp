@@ -4,20 +4,20 @@
 #include <unordered_map>
 #include <functional> 
 #include <variant>     
-#include <boost/uuid/uuid_io.hpp> 
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/beast/websocket/stream.hpp>
 
-#include <web/loginhandler.hpp>
-#include <web/datahandler.hpp>
+#include "loginhandler.hpp" 
+#include "datahandler.hpp"  
 
-// 1. Core type-safe polymorphic variant alias
+// Ensure the websocket stream type exactly matches the server definition
+using ws_stream = boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
-// 2. Business logic forward declarations
 void handleLogin(loginRequest &req);
 void handleData(data::dataTransaction &tx);
 
-// 3. Declare the global routing matrix table as extern
+// Declared with the unified ws_stream type
 extern const std::unordered_map<std::string, std::function<void(RequestVariant &)>> functionTable;
 
-// 4. Central entry router forwarding function
-void dispatch(const std::string &cmd, RequestVariant &req);
+void dispatch(const std::string &cmd, RequestVariant &req, ws_stream* ws = nullptr);

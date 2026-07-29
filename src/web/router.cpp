@@ -1,10 +1,7 @@
 #include <web/router.hpp>
-#include <web/loginhandler.hpp>
-#include <web/datahandler.hpp>
 #include <print>       
 #include <iostream>    
 
-// 1. Definition of explicit business logic anchors
 void handleLogin(loginRequest &req) {
     login(req);
 }
@@ -13,7 +10,6 @@ void handleData(data::dataTransaction &tx) {
     handleDataSync(tx);
 }
 
-// 2. Exact allocation and definition of your lambda-packed functionTable map
 const std::unordered_map<std::string, std::function<void(RequestVariant &)>> functionTable = {
     { "login", [](RequestVariant &req) {
         if (auto *loginPtr = std::get_if<loginRequest>(&req)) {
@@ -31,10 +27,16 @@ const std::unordered_map<std::string, std::function<void(RequestVariant &)>> fun
     }}
 };
 
-// 3. Definition of the top-level route validation loop
-void dispatch(const std::string &cmd, RequestVariant &req) {
+void dispatch(const std::string &cmd, RequestVariant &req, ws_stream* ws) {
     auto it = functionTable.find(cmd);
     if (it != functionTable.end()) {
+        if (cmd == "data") {
+            if (auto *dataPtr = std::get_if<data::dataTransaction>(&req)) {
+                dataPtr->socketContext = ws; // Simply assigns the pointer directly (handles null safely!)
+                std::println( "NOTIFY: OP:{} DISPATCHING! " , cmd);
+
+            }
+        }
         it->second(req); 
     } else {
         std::println(std::cerr, "Command: '{}' not supported by endpoint routing matrices.", cmd);

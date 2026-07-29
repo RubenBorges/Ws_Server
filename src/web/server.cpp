@@ -1,5 +1,5 @@
 #include <web/server.hpp>
-#include <variant>
+
 #include <boost/asio/redirect_error.hpp>
 #include <boost/asio/use_awaitable.hpp>
 #include <boost/beast/websocket.hpp> 
@@ -113,21 +113,19 @@ asio::awaitable<void> AsyncEchoServer::session_loop(tcp::socket socket) {
         }
 
         // 6. Setup transaction context and fire it down into your variant router
-        // NOTE: Here we pass a mockup layout. Later, you can populate ThisDataTransaction 
-        // with fields parsed directly out of incoming_msg.
-        RequestVariant currentPayload = ThisDataTransaction; 
+        RequestVariant currentPayload{std::in_place_type<data::dataTransaction>, ThisDataTransaction};
         
         // Dispatches the payload through the variant lookup matrix table
-        dispatch("data", currentPayload); 
+// Notice we pass the address of our local ws context (&ws)
+::dispatch("data", currentPayload, &ws);
 
         // 7. Extract the modified payload data transaction state back out 
-if (auto* txPtr = std::get_if<data::dataTransaction>(&currentPayload)) {
-    txPtr->socketContext = &ws; // Dynamically attach the connection frame context pointer
-    data_ops::sendBinaryToWebSocket(*txPtr); 
-}
-
+        if (auto* txPtr = std::get_if<data::dataTransaction>(&currentPayload)) {
+            // Send the raw data transaction buffer right back down this specific WebSocket link
+            data_ops::sendBinaryToWebSocket(*txPtr);
+        }
     }
-}
+} // <-- FIXED: Added missing closing brace to properly end session_loop
 
 // Creates a server instance for the caller using the provided I/O context and options.
 std::shared_ptr<AsyncEchoServer> make_server(asio::io_context& io, ServerOptions options) {

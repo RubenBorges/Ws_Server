@@ -116,6 +116,7 @@ build install/strip: phony CMakeFiles/install/strip.util
 build cmake_object_order_depends_target_Ws_server: phony || .
 
 build src/CMakeFiles/Ws_server.dir/server_main.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/server_main.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/server_main.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -124,6 +125,7 @@ build src/CMakeFiles/Ws_server.dir/server_main.cpp.o: CXX_COMPILER__Ws_server_un
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_server.dir
 
 build src/CMakeFiles/Ws_server.dir/web/server.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/server.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/server.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -132,6 +134,7 @@ build src/CMakeFiles/Ws_server.dir/web/server.cpp.o: CXX_COMPILER__Ws_server_uns
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_server.dir
 
 build src/CMakeFiles/Ws_server.dir/web/client.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/client.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/client.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -140,6 +143,7 @@ build src/CMakeFiles/Ws_server.dir/web/client.cpp.o: CXX_COMPILER__Ws_server_uns
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_server.dir
 
 build src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -148,6 +152,7 @@ build src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_serv
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_server.dir
 
 build src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -156,6 +161,7 @@ build src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_serve
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_server.dir
 
 build src/CMakeFiles/Ws_server.dir/web/router.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_Ws_server
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/router.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -171,10 +177,10 @@ build src/CMakeFiles/Ws_server.dir/web/router.cpp.o: CXX_COMPILER__Ws_server_uns
 #############################################
 # Link the executable src/Ws_server
 
-build src/Ws_server: CXX_EXECUTABLE_LINKER__Ws_server_ src/CMakeFiles/Ws_server.dir/server_main.cpp.o src/CMakeFiles/Ws_server.dir/web/server.cpp.o src/CMakeFiles/Ws_server.dir/web/client.cpp.o src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o src/CMakeFiles/Ws_server.dir/web/router.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libpq.so
+build src/Ws_server: CXX_EXECUTABLE_LINKER__Ws_server_ src/CMakeFiles/Ws_server.dir/server_main.cpp.o src/CMakeFiles/Ws_server.dir/web/server.cpp.o src/CMakeFiles/Ws_server.dir/web/client.cpp.o src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o src/CMakeFiles/Ws_server.dir/web/router.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libboost_random.so.1.91.0 /usr/lib/libpq.so
   DEP_FILE = src/CMakeFiles/Ws_server.dir/link.d
   LINK_FLAGS = -Wl,--dependency-file=src/CMakeFiles/Ws_server.dir/link.d
-  LINK_LIBRARIES = /usr/local/lib/libpqxx-8.0.a  /usr/lib/libssl.so  /usr/lib/libcrypto.so  /usr/lib/libpq.so
+  LINK_LIBRARIES = /usr/local/lib/libpqxx-8.0.a  /usr/lib/libssl.so  /usr/lib/libcrypto.so  /usr/lib/libboost_random.so.1.91.0  /usr/lib/libpq.so
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -192,6 +198,7 @@ build src/Ws_server: CXX_EXECUTABLE_LINKER__Ws_server_ src/CMakeFiles/Ws_server.
 build cmake_object_order_depends_target_Ws_client: phony || .
 
 build src/CMakeFiles/Ws_client.dir/client_main.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/client_main.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/client_main.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -200,6 +207,7 @@ build src/CMakeFiles/Ws_client.dir/client_main.cpp.o: CXX_COMPILER__Ws_client_un
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_client.dir
 
 build src/CMakeFiles/Ws_client.dir/web/server.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/server.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/server.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -208,6 +216,7 @@ build src/CMakeFiles/Ws_client.dir/web/server.cpp.o: CXX_COMPILER__Ws_client_uns
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_client.dir
 
 build src/CMakeFiles/Ws_client.dir/web/client.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/client.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/client.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -216,6 +225,7 @@ build src/CMakeFiles/Ws_client.dir/web/client.cpp.o: CXX_COMPILER__Ws_client_uns
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_client.dir
 
 build src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -224,6 +234,7 @@ build src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_clie
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_client.dir
 
 build src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -232,6 +243,7 @@ build src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_clien
   TARGET_SUPPORT_DIR = src/CMakeFiles/Ws_client.dir
 
 build src/CMakeFiles/Ws_client.dir/web/router.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_Ws_client
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/router.cpp.o.d
   FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
@@ -247,10 +259,10 @@ build src/CMakeFiles/Ws_client.dir/web/router.cpp.o: CXX_COMPILER__Ws_client_uns
 #############################################
 # Link the executable src/Ws_client
 
-build src/Ws_client: CXX_EXECUTABLE_LINKER__Ws_client_ src/CMakeFiles/Ws_client.dir/client_main.cpp.o src/CMakeFiles/Ws_client.dir/web/server.cpp.o src/CMakeFiles/Ws_client.dir/web/client.cpp.o src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o src/CMakeFiles/Ws_client.dir/web/router.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libpq.so
+build src/Ws_client: CXX_EXECUTABLE_LINKER__Ws_client_ src/CMakeFiles/Ws_client.dir/client_main.cpp.o src/CMakeFiles/Ws_client.dir/web/server.cpp.o src/CMakeFiles/Ws_client.dir/web/client.cpp.o src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o src/CMakeFiles/Ws_client.dir/web/router.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libboost_random.so.1.91.0 /usr/lib/libpq.so
   DEP_FILE = src/CMakeFiles/Ws_client.dir/link.d
   LINK_FLAGS = -Wl,--dependency-file=src/CMakeFiles/Ws_client.dir/link.d
-  LINK_LIBRARIES = /usr/local/lib/libpqxx-8.0.a  /usr/lib/libssl.so  /usr/lib/libcrypto.so  /usr/lib/libpq.so
+  LINK_LIBRARIES = /usr/local/lib/libpqxx-8.0.a  /usr/lib/libssl.so  /usr/lib/libcrypto.so  /usr/lib/libboost_random.so.1.91.0  /usr/lib/libpq.so
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   POST_BUILD = :
   PRE_LINK = :

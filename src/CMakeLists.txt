@@ -50,8 +50,7 @@ target_include_directories(Ws_client PRIVATE
 target_include_directories(ws_test PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/BPY
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
-    
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/extern  
 )
 
 target_link_libraries(Ws_server
@@ -59,6 +58,7 @@ target_link_libraries(Ws_server
         libpqxx::pqxx
         OpenSSL::SSL
         OpenSSL::Crypto
+        Boost::random     
 )
 
 target_link_libraries(Ws_client
@@ -66,13 +66,15 @@ target_link_libraries(Ws_client
         libpqxx::pqxx
         OpenSSL::SSL
         OpenSSL::Crypto
+        Boost::random  
 )
+
 target_link_libraries(ws_test
     PRIVATE 
         libpqxx::pqxx
         OpenSSL::SSL
         OpenSSL::Crypto
-        Boost::random  
+        Boost::random    
 )
 
 target_compile_options(Ws_server PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)

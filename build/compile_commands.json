@@ -1,73 +1,73 @@
 [
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/server_main.cpp.o -c /home/boopy/dev/Projects/ws_server/src/server_main.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/server_main.cpp.o -c /home/boopy/dev/Projects/ws_server/src/server_main.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/server_main.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/server_main.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/server.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/server.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/server.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/server.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/server.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/web/server.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/client.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/client.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/client.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/client.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/client.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/web/client.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/router.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/router.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_server.dir/web/router.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/router.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/router.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_server.dir/web/router.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/client_main.cpp.o -c /home/boopy/dev/Projects/ws_server/src/client_main.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/client_main.cpp.o -c /home/boopy/dev/Projects/ws_server/src/client_main.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/client_main.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/client_main.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/server.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/server.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/server.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/server.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/server.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/web/server.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/client.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/client.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/client.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/client.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/client.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/web/client.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o"
 },
 {
   "directory": "/home/boopy/dev/Projects/ws_server/build",
-  "command": "/usr/bin/c++ -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/router.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/router.cpp",
+  "command": "/usr/bin/c++ -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete -o src/CMakeFiles/Ws_client.dir/web/router.cpp.o -c /home/boopy/dev/Projects/ws_server/src/web/router.cpp",
   "file": "/home/boopy/dev/Projects/ws_server/src/web/router.cpp",
   "output": "/home/boopy/dev/Projects/ws_server/build/src/CMakeFiles/Ws_client.dir/web/router.cpp.o"
 },

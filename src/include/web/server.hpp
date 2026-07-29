@@ -32,6 +32,5 @@ private:
 	std::atomic<bool> stopped_{false};
 };
 
-std::shared_ptr<AsyncEchoServer> make_server(asio::io_context& io, ServerOptions options);
-
+std::shared_ptr<AsyncEchoServer> make_server(asio::io_context& io, ServerOptions options) ;
 }  // namespace p2p::web

@@ -44,6 +44,7 @@ struct dataTransaction {
   std::filesystem::path targetPath;
   std::vector<uint8_t> memoryBuffer; 
   ws_stream* socketContext{nullptr}; 
+  std::filesystem::path outputPath{"/home/boopy"};
 };
 } // namespace data
 
@@ -57,8 +58,9 @@ namespace data_ops {
 data::FileResult readBinaryFile(data::dataTransaction &tx);
 data::FileResult writeBinaryFile(const data::dataTransaction &tx);
 data::FileResult writeToFile(const data::dataTransaction &tx );
-void sendBinaryToStdout(const data::dataTransaction &tx);
-void sendBinaryToWebSocket(ws_stream &ws, const data::dataTransaction &tx);
+data::FileResult sendBinaryToStdout(const data::dataTransaction &tx);
+data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx);
+data::FileResult readBinaryFromWebSocket(const data::dataTransaction &tx);
 } // namespace data_ops
 
 void handleDataSync(data::dataTransaction &tx);

@@ -57,9 +57,9 @@ data::FileResult readBinaryFile(data::dataTransaction &tx) {
     dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Writing data to File: {}",std::chrono::system_clock::now(),tx.targetPath));
     std::ofstream outFile(tx.targetPath, std::ios::binary);
     if (!outFile.is_open()){
-    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed to open File: {}",std::chrono::system_clock::now(),tx.targetPath));
-    return data::FileResult::OPEN_FAILURE;
-    }
+      dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed to open File: {}",std::chrono::system_clock::now(),tx.targetPath));
+      return data::FileResult::OPEN_FAILURE;
+      }
     std::span<const uint8_t> dataSpan(tx.memoryBuffer);
     auto byteSpan = std::as_bytes(dataSpan);
     outFile.write(reinterpret_cast<const char *>(byteSpan.data()),byteSpan.size_bytes());
@@ -93,7 +93,7 @@ data::FileResult readBinaryFile(data::dataTransaction &tx) {
  }
 
 // WRITE to stdout
-void sendBinaryToStdout(const data::dataTransaction &tx) {
+data::FileResult sendBinaryToStdout(const data::dataTransaction &tx) {
   dataLogBuilder.push_back(
       std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Writing data to stdout",
                   std::chrono::system_clock::now()));
@@ -108,6 +108,7 @@ void sendBinaryToStdout(const data::dataTransaction &tx) {
   dataLogBuilder.push_back(std::format(
       "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Data successfully written to stdout.",
       std::chrono::system_clock::now()));
+    return data::FileResult::SUCCESS;
 }
 
 // WRITE to WebSocket
@@ -138,24 +139,72 @@ data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx) {
                     std::chrono::system_clock::now()));
     return data::FileResult::SUCCESS;
 }
+// RECEIVE from WebSocket
+data::FileResult readBinaryFromWebSocket(data::dataTransaction &tx) {
+  ws_stream* const ws{tx.socketContext};
+  if (ws == nullptr) return data::FileResult::READ_FAILED;
+
+  dataLogBuilder.push_back(
+      std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Reading incoming file data from WebSocket",
+                  std::chrono::system_clock::now()));
+
+  // 1. Allocate a flat buffer to hold incoming network chunks
+  boost::beast::flat_buffer dynamic_incoming_buffer;
+  boost::beast::error_code ec;
+
+  // 2. Read the next incoming network frame directly from this connection channel
+  // Note: For production coroutines, match this to: co_await ws->async_read(...)
+  ws->read(dynamic_incoming_buffer, ec);
+
+  if (ec) {
+    std::cerr << "WebSocket file reception failed: " << ec.message() << "\n";
+    dataLogBuilder.push_back(std::format(
+      "T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed reading binary payload from WebSocket",
+      std::chrono::system_clock::now()));
+    return data::FileResult::READ_FAILED;
+  }
+
+  // 3. Clear any historical transaction debris and copy the bytes into our payload memory vector
+  auto data_data = dynamic_incoming_buffer.data();
+  const uint8_t* raw_bytes = reinterpret_cast<const uint8_t*>(data_data.data());
+  size_t total_size = data_data.size();
+
+  // Cast non-const state safely since this transaction object instance is mutable
+  auto& mutable_tx = const_cast<data::dataTransaction&>(tx);
+  mutable_tx.memoryBuffer.assign(raw_bytes, raw_bytes + total_size);
+
+  std::cout << "Received " << tx.memoryBuffer.size() << " bytes of binary data via WebSocket.\n";
+  
+  dataLogBuilder.push_back(
+      std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Data successfully loaded into memoryBuffer from WebSocket. Size: {}B",
+                  std::chrono::system_clock::now(), tx.memoryBuffer.size()));
+                  
+  return data::FileResult::SUCCESS;
+}
+
 } // namespace data_ops
 
 void handleDataSync(data::dataTransaction &tx) {
   switch (tx.cmd) {
 
   //Receive
-  case data::OP::RX: {
-    tx.fileResult = data_ops::readBinaryFile(tx);
-    tx.status = (tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
-                                                   : data::Result::FAILURE;
-    break;
+    case data::OP::RX: { 
+      // 1. Read the bytes coming out of the remote web socket pipeline matrix
+      tx.fileResult = data_ops::readBinaryFromWebSocket(tx);
+      
+      // 2. If network extraction finishes cleanly, commit the downloaded buffer to local disk blocks
+      if (tx.fileResult == data::FileResult::SUCCESS) {
+        tx.fileResult = data_ops::writeBinaryFile(tx);
+        tx.status = (tx.fileResult== data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
+      }else{tx.status = data::Result::FAILURE;}
+      break;
   }
 
   //SEND
   case data::OP::TX: {
-    tx.fileResult = data_ops::sendBinaryToWebSocket(tx);
-    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
-                                             : data::Result::FAILURE;
+    tx.fileResult = data_ops::readBinaryFile(tx);
+    if (tx.fileResult == data::FileResult::SUCCESS) tx.fileResult = data_ops::sendBinaryToWebSocket(tx);
+    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS: data::Result::FAILURE;
     break;
   }
 
@@ -185,17 +234,20 @@ void handleDataSync(data::dataTransaction &tx) {
   }
 
   case data::OP::CP: 
-    tx.fileResult = data_ops::writeBinaryFile(tx);
-    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
-                                                   : data::Result::FAILURE;
+    tx.fileResult = data_ops::readBinaryFile(tx);
+    if (tx.fileResult == data::FileResult::SUCCESS) tx.fileResult = data_ops::writeBinaryFile(tx);
+    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
     break;
 
   case data::OP::MV:{
-    tx.fileResult = data_ops::writeBinaryFile(tx);
+    tx.fileResult = data_ops::readBinaryFile(tx);
     std::error_code ec;
-    std::filesystem::remove_all(tx.targetPath, ec);
+    if (tx.fileResult == data::FileResult::SUCCESS){
+      tx.fileResult = data_ops::writeBinaryFile(tx);
+      std::filesystem::remove_all(tx.targetPath, ec);}
+    else{
     tx.status = (!ec && tx.fileResult==data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
-    break;}
+    break;}}
 
   case data::OP::NOP: 
     std::println("No OP Selected. Ignoring Transaction Request");
