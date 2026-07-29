@@ -1,8 +1,8 @@
 
 CompileFlags:
   Add:
-    - -I/home/boopy/Projects/12P2PServe/src/include
-    - -I/home/boopy/Projects/12P2PServe/src/include/extern
+    - -I/home/boopy/dev/Projects/ws_server/src/include
+    - -I/home/boopy/dev/Projects/ws_server/src/include/extern
     - -std=c++26
   CompilationDatabase: build/
 Diagnostics:

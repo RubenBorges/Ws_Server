@@ -14,7 +14,7 @@ class DirectoryCrawler {
 
 public:
     //Constructor: supply a directory path
-    DirectoryCrawler(const std::string& dirPathStr);
+    DirectoryCrawler(const std::string& rootPath);
     int crawl(std::vector<std::vector<std::filesystem::directory_entry>>& OUT_ListOfEntries);
     int crawl(std::vector<std::filesystem::directory_entry>& OUT_ListOfDirectoryEntries);
     //Non-recursive directory crawl.

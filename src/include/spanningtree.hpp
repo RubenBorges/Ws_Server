@@ -39,6 +39,6 @@ network.printGraph();
 
 */
 
-#include "BPY/SpanningTree/node.hpp"
-#include "BPY/SpanningTree/graph.hpp"
-#include "BPY/SpanningTree/spanning_tree.hpp"
+#include <BPY/SpanningTree/node.hpp>
+#include <BPY/SpanningTree/graph.hpp>
+#include <BPY/SpanningTree/spanning_tree.hpp>

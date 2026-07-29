@@ -6,6 +6,7 @@ set(BP_SOURCES
     BPY/DirectoryCrawler/DirectoryCrawler.cpp
     BPY/fbptree/fbptree.cpp
 )
+
 # libpqxx
 set(libpqxx_DIR "/usr/local/lib/cmake/libpqxx")
 find_package(libpqxx REQUIRED CONFIG)
