@@ -1,4 +1,4 @@
-#pragma once // Crucial: Prevents recursive header inclusion bugs
+#pragma once // Prevents recursive header inclusion bugs
 
 #include <cstdlib>
 #include <jwt-cpp/jwt.h>
@@ -50,7 +50,7 @@ struct session_t {
     Account* account{nullptr};
 };
 
-// FIX: Changed 'static' to 'inline' so all CPP files share the exact same instance!
+// 'inline' ensures all CPP files share the exact same global instance without linker errors
 inline loginRequest ThisLoginRequest;
 inline session_t session;
     
@@ -72,7 +72,7 @@ namespace account {
         return gen();
     }
 
-    // FIX: Accepted std::span by VALUE, not by reference. Spans are lightweight views.
+    // Pass std::span by value since it is a lightweight view container
     inline boost::uuids::uuid generate_uuid(std::span<boost::uuids::uuid> idTable) {
         boost::uuids::uuid id;
         do {
@@ -81,9 +81,13 @@ namespace account {
         return id;
     }
 
-    inline Account createAccount(loginCredentials logInput, std::vector<boost::uuids::uuid>& uuidTable) {
+    // FIX: Match parameter usage and structure initialization fields cleanly
+    inline Account createAccount(const loginCredentials& logInput, std::vector<boost::uuids::uuid>& uuidTable) {
         std::span<boost::uuids::uuid> uuidSpan = uuidTable;
-        Account acc{logInput, generate_uuid(uuidSpan)};
+        boost::uuids::uuid newUuid = generate_uuid(uuidSpan);
+        
+        // Match Account struct design: { loginCred, uuid, sessionToken, active }
+        Account acc{logInput, newUuid, "", true};
         uuidTable.emplace_back(acc.uuid);
         return acc;
     }
@@ -107,7 +111,6 @@ namespace account {
         return token;
     }
 
-    // FIX: Dropped invalid static layout keyword placement context
     inline bool validateLogin(const Account& acc, const loginCredentials& logInput) {
         return acc.loginCred == logInput;
     }
