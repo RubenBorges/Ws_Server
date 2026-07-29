@@ -24,7 +24,7 @@ int main() {
     RequestVariant loginPayload = myLogin; 
     
     // Invoke using a safe cast layer for local simulation
-    dispatch("login", loginPayload);    
+    dispatch("login", loginPayload, nullptr);    
     
     // Extract the mutated state back out if needed
     myLogin = std::get<loginRequest>(loginPayload);
@@ -35,13 +35,13 @@ int main() {
     // FIXED: Changed 'CP' to 'RX' (Read operation) because CP does not exist in your OP enum layout
     myDataTx.cmd = data::OP::CP; 
     myDataTx.targetPath = "/home/boopy/Pictures/out";
-    myDataTx.outputPath = "/home/boopy/Projects/ws_server";
+    myDataTx.outputPath = "outPic";
 
     // Wrap and dispatch seamlessly using the identical signature entry pointer
     RequestVariant dataPayload = myDataTx;
 
     // FIXED: The first parameter must be the routing key string ("data"), 
     // and the last parameter must resolve to a reference 'ws_stream&' matching your router header signature.
-    dispatch("data", dataPayload);    
+    dispatch("data", dataPayload, myDataTx.socketContext);    
     return 0;
 }

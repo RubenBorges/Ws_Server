@@ -1,5 +1,4 @@
 #pragma once 
-
 #include <string>
 #include <unordered_map>
 #include <functional> 
@@ -10,14 +9,14 @@
 #include "loginhandler.hpp" 
 #include "datahandler.hpp"  
 
-// Ensure the websocket stream type exactly matches the server definition
 using ws_stream = boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
+
+// 1. Explicitly match your exact target variant design pair
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
 void handleLogin(loginRequest &req);
-void handleData(data::dataTransaction &tx);
+void handleDataRequest(data::dataTransaction &req); // Hand over mapping engine
 
-// Declared with the unified ws_stream type
-extern const std::unordered_map<std::string, std::function<void(RequestVariant &)>> functionTable;
+extern const std::unordered_map<std::string, std::function<void(RequestVariant&, ws_stream&)>> functionTable;
 
-void dispatch(const std::string &cmd, RequestVariant &req, ws_stream* ws = nullptr);
+void dispatch(const std::string &cmd, RequestVariant& req, ws_stream* ws);
