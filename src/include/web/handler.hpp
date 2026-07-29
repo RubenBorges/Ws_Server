@@ -1,29 +1,52 @@
-#pragma once // Crucial to prevent duplicate include compilation errors
+#pragma once 
 
 #include <string>
 #include <unordered_map>
-#include <functional> // Required for std::function
-#include <print>       // Required for std::println
-#include <iostream>    // Required for std::cerr
-#include <boost/uuid/uuid_io.hpp> // Required for boost::uuids::to_string
-#include "login.hpp"
-// 1. Handles a login command wrapper forwarding requests directly to business logic layers
-inline void handleLogin(loginRequest &req) {login(req);}
+#include <functional> 
+#include <print>       
+#include <iostream>    
+#include <variant>     // Required for type-safe polymorphic structures
+#include <boost/uuid/uuid_io.hpp> 
 
-// 2. Handles a data-processing command placeholder for the server-side dispatcher
-inline void handleData(loginRequest &req) {std::println("Processing data payload requests for UUID: {}",boost::uuids::to_string(req.uuid));}
+#include "loginhandler.hpp" // Ensure correct header path mapping
+#include "datahandler.hpp"  // Ensure correct header path mapping
 
-// 3. Modernized type-safe map using std::function closures
-inline const std::unordered_map<std::string, std::function<void(loginRequest &)>> functionTable = {
-    {"login", handleLogin}, 
-    {"data", handleData}
+// 1. Create a type-safe wrapper variant containing all supported system request payloads
+using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
+
+// 2. Business logic forwarding anchors mapping parameters cleanly
+inline void handleLogin(loginRequest &req) {
+    login(req);
+}
+
+inline void handleData(data::dataTransaction &tx) {
+    handleDataSync(tx);
+}
+
+// 3. Polymorphic router table capable of matching different argument signatures
+inline const std::unordered_map<std::string, std::function<void(RequestVariant &)>> functionTable = {
+    { "login", [](RequestVariant &req) {
+        // std::get_if validates the type variant matches at runtime
+        if (auto *loginPtr = std::get_if<loginRequest>(&req)) {
+            handleLogin(*loginPtr);
+        } else {
+            std::println(std::cerr, "Routing Error: 'login' path expected loginRequest payload.");
+        }
+    }},
+    { "data", [](RequestVariant &req) {
+        if (auto *dataPtr = std::get_if<data::dataTransaction>(&req)) {
+            handleData(*dataPtr);
+        } else {
+            std::println(std::cerr, "Routing Error: 'data' path expected dataTransaction payload.");
+        }
+    }}
 };
 
-// 4. Dispatch entry router routing transactional request state payloads
-inline void dispatch(const std::string &cmd, loginRequest &req) {
+// 4. Dispatch entry router routing any structural variant type
+inline void dispatch(const std::string &cmd, RequestVariant &req) {
     auto it = functionTable.find(cmd);
     if (it != functionTable.end()) {
-        it->second(req); // Invoke type-safe dynamic execution paths cleanly
+        it->second(req); 
     } else {
         std::println(std::cerr, "Command: '{}' not supported by endpoint routing matrices.", cmd);
     }
