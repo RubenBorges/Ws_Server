@@ -1,0 +1,12 @@
+
+CompileFlags:
+  Add:
+    - -I/home/boopy/Projects/12P2PServe/src/include
+    - -I/home/boopy/Projects/12P2PServe/src/include/extern
+    - -std=c++26
+  CompilationDatabase: build/
+Diagnostics:
+  UnusedIncludes: Strict
+
+Index:
+  Background: Build

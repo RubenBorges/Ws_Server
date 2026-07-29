@@ -306,24 +306,3 @@ inline void login(loginRequest &logReq) {
     std::cerr << "Log Command Switch Error";
   }
 }
-// Handles a login command placeholder for the server-side command dispatcher.
-inline void handleLogin(loginRequest &req) { login(req); }
-// Handles a data-processing command placeholder for the server-side dispatcher.
-inline void handleData(loginRequest &req) {
-  std::println("Processing data payload requests for UUID: {}",
-               boost::uuids::to_string(req.uuid));
-}
-// Map mapping strings to functional entry wrappers
-inline const std::unordered_map<std::string,
-                                std::function<void(loginRequest &)>>
-    functionTable = {{"login", handleLogin}, {"data", handleData}};
-
-// Dispatch entry router routing transactional request states
-inline void dispatch(const std::string &cmd, loginRequest &req) {
-  auto it = functionTable.find(cmd);
-  if (it != functionTable.end()) {
-    it->second(req);
-  } else {
-    std::println(std::cerr, "Command: '{}' not supported.", cmd);
-  }
-}
