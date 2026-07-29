@@ -35,6 +35,7 @@ int main() {
 
     // Wrap and dispatch seamlessly using the identical signature entry pointer
     RequestVariant dataPayload = myDataTx;
+    ThisDataTransaction = myDataTx;
     dispatch("data", dataPayload);
     
     return 0;

@@ -121,10 +121,11 @@ asio::awaitable<void> AsyncEchoServer::session_loop(tcp::socket socket) {
         dispatch("data", currentPayload); 
 
         // 7. Extract the modified payload data transaction state back out 
-        if (auto* txPtr = std::get_if<data::dataTransaction>(&currentPayload)) {
-            // Send the raw data transaction buffer right back down this specific WebSocket link
-            data_ops::sendBinaryToWebSocket(ws, *txPtr);
-        }
+if (auto* txPtr = std::get_if<data::dataTransaction>(&currentPayload)) {
+    txPtr->socketContext = &ws; // Dynamically attach the connection frame context pointer
+    data_ops::sendBinaryToWebSocket(*txPtr); 
+}
+
     }
 }
 

@@ -1,6 +1,9 @@
 set(WEB_SOURCES
     web/server.cpp
     web/client.cpp
+    web/loginhandler.cpp
+    web/datahandler.cpp
+    web/router.cpp
 )
 set(BP_SOURCES
     BPY/DirectoryCrawler/DirectoryCrawler.cpp
@@ -27,10 +30,6 @@ add_executable(Ws_client
     ${WEB_SOURCES}
 )
 add_executable(ws_test
-    BPY/DirectoryCrawler/DirectoryCrawler.cpp
-    web/loginhandler.cpp
-    web/datahandler.cpp
-    web/router.cpp
     data.cpp
     ${WEB_SOURCES}
     ${BP_SOURCES}
