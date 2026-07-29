@@ -16,7 +16,7 @@
 namespace bpy {
 namespace utility {
 
-bool isTargetDirectory(const std::string &path) {
+inline bool isTargetDirectory(const std::string &path) {
   struct stat pathStat;
   // 1. Invoke the stat system call to pull the target metadata
   // Returns 0 on success, -1 on failure (e.g. path does not exist)
@@ -29,7 +29,7 @@ bool isTargetDirectory(const std::string &path) {
   return S_ISDIR(pathStat.st_mode);
 }
 
-bool removeTargetViaSyscall(const std::string &pathTarget) {
+inline bool removeTargetViaSyscall(const std::string &pathTarget) {
   // 1. Configure the removal flags based on the target type
   int flags = isTargetDirectory(pathTarget)
                   ? AT_REMOVEDIR
@@ -47,7 +47,7 @@ bool removeTargetViaSyscall(const std::string &pathTarget) {
   return false; // If it failed, the global 'errno' variable holds the exact
                 // kernel failure reason
 };
-bool createEmptyFile(const std::filesystem::path& filePath) {
+inline bool createEmptyFile(const std::filesystem::path& filePath) {
 
     if (filePath.has_parent_path()) {     // 1. Optional: Ensure the folder structure leading up to the file exists
         std::filesystem::create_directories(filePath.parent_path());
