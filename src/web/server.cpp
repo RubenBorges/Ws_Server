@@ -9,6 +9,7 @@
 
 namespace p2p::web {
 
+// Constructs the server object, preparing the acceptor and storing the server options.
 AsyncEchoServer::AsyncEchoServer(asio::io_context& io, ServerOptions options)
     : io_(io), acceptor_(io), options_(std::move(options)) {
     acceptor_.open(tcp::v4());
@@ -17,11 +18,13 @@ AsyncEchoServer::AsyncEchoServer(asio::io_context& io, ServerOptions options)
     acceptor_.listen(asio::socket_base::max_listen_connections);
 }
 
+// Begins accepting client connections by spawning the accept loop coroutine.
 void AsyncEchoServer::start() {
     auto self = shared_from_this();
     asio::co_spawn(io_, [self]() { return self->accept_loop(); }, asio::detached);
 }
 
+// Requests shutdown by canceling the acceptor and stopping the I/O context.
 void AsyncEchoServer::request_stop() {
     if (stopped_.exchange(true)) {
         return;
@@ -38,10 +41,12 @@ void AsyncEchoServer::request_stop() {
     io_.stop();
 }
 
+// Returns whether the server has already been told to stop.
 bool AsyncEchoServer::is_stopped() const noexcept {
     return stopped_.load();
 }
 
+// Continuously waits for new incoming connections and spawns a session for each one.
 asio::awaitable<void> AsyncEchoServer::accept_loop() {
     while (!is_stopped()) {
         boost::system::error_code ec;
@@ -64,6 +69,7 @@ asio::awaitable<void> AsyncEchoServer::accept_loop() {
     }
 }
 
+// Handles a single client connection by echoing received lines until shutdown.
 asio::awaitable<void> AsyncEchoServer::session_loop(tcp::socket socket) {
     asio::streambuf read_buffer;
 
@@ -98,6 +104,7 @@ asio::awaitable<void> AsyncEchoServer::session_loop(tcp::socket socket) {
     }
 }
 
+// Creates a server instance for the caller using the provided I/O context and options.
 std::shared_ptr<AsyncEchoServer> make_server(asio::io_context& io, ServerOptions options) {
     return std::make_shared<AsyncEchoServer>(io, std::move(options));
 }

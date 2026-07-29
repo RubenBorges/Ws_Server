@@ -11,7 +11,7 @@ using tcp = asio::ip::tcp;
 
 struct ServerOptions {
 	unsigned short port;
-	std::string termination_command = "/shutdown";
+	std::string termination_command = "shutdown";
 };
 
 class AsyncEchoServer : public std::enable_shared_from_this<AsyncEchoServer> {
