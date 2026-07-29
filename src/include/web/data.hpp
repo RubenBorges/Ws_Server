@@ -6,6 +6,9 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <chrono>
+#include <BPY/DirectoryCrawler.hpp>
+#include <BPY/fbptree.hpp>
+#include <BPY/spanningtree.hpp>
 #include <flat_map>
 #include <format>
 #include <functional>

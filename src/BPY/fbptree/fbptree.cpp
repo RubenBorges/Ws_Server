@@ -1,5 +1,5 @@
-#include "../include/fbptree/fbptree.hpp"
-
+//#include "../include/fbptree/fbptree.hpp"
+#include <BPY/fbptree.hpp>
 #include <algorithm>
 #include <cassert>
 

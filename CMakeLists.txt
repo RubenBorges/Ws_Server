@@ -8,6 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(src)
 
-install(TARGETS Ws_server Ws_client DESTINATION bin)
+install(TARGETS Ws_server Ws_client ws_test DESTINATION bin)
 #install(FILES db.conf DESTINATION etc)
 #install(DIRECTORY input DESTINATION .)

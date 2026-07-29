@@ -2,6 +2,10 @@ set(WEB_SOURCES
     web/server.cpp
     web/client.cpp
 )
+set(BP_SOURCES
+    BPY/DirectoryCrawler/DirectoryCrawler.cpp
+    BPY/fbptree/fbptree.cpp
+)
 # libpqxx
 set(libpqxx_DIR "/usr/local/lib/cmake/libpqxx")
 find_package(libpqxx REQUIRED CONFIG)
@@ -20,6 +24,11 @@ add_executable(Ws_client
     client_main.cpp
     ${WEB_SOURCES}
 )
+add_executable(ws_test
+    main.cpp
+    ${WEB_SOURCES}
+    ${BP_SOURCES}
+)
 
 target_include_directories(Ws_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -27,6 +36,11 @@ target_include_directories(Ws_server PRIVATE
 )
 
 target_include_directories(Ws_client PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
+)
+
+target_include_directories(ws_test PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
 )
@@ -44,8 +58,15 @@ target_link_libraries(Ws_client
         OpenSSL::SSL
         OpenSSL::Crypto
 )
+target_link_libraries(ws_test
+    PRIVATE 
+        libpqxx::pqxx
+        OpenSSL::SSL
+        OpenSSL::Crypto
+)
 
 target_compile_options(Ws_server PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)
 target_compile_options(Ws_client PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)
+target_compile_options(ws_test PRIVATE -O3 -Wall -Wextra -Wno-mismatched-new-delete)
 
 install(TARGETS Ws_server Ws_client DESTINATION bin)

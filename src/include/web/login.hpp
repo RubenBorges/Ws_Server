@@ -8,7 +8,6 @@
 #include <chrono>
 #include <flat_map>
 #include <format>
-#include <functional>
 #include <iostream>
 #include <jwt-cpp/jwt.h>
 #include <print>
@@ -26,8 +25,7 @@ enum class LogResult : int { SUCCESS = 0, FAILURE = 1, PENDING = 2 };
 struct loginCredentials {
   std::string username;
   std::string password;
-  friend bool operator==(const loginCredentials &lhs,
-                         const loginCredentials &rhs) {
+  friend bool operator==(const loginCredentials &lhs, const loginCredentials &rhs) {
     return lhs.username == rhs.username && lhs.password == rhs.password;
   }
 };

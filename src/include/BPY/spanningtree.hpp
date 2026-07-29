@@ -39,6 +39,6 @@ network.printGraph();
 
 */
 
-#include "node.hpp"
-#include "graph.hpp"
-#include "spanning_tree.hpp"
+#include "SpanningTree/node.hpp"
+#include "SpanningTree/graph.hpp"
+#include "SpanningTree/spanning_tree.hpp"

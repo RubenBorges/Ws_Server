@@ -14,7 +14,10 @@ inline void handleLogin(loginRequest &req) {login(req);}
 inline void handleData(loginRequest &req) {std::println("Processing data payload requests for UUID: {}",boost::uuids::to_string(req.uuid));}
 
 // 3. Modernized type-safe map using std::function closures
-inline const std::unordered_map<std::string, std::function<void(loginRequest &)>> functionTable = {{"login", handleLogin}, {"data", handleData}};
+inline const std::unordered_map<std::string, std::function<void(loginRequest &)>> functionTable = {
+    {"login", handleLogin}, 
+    {"data", handleData}
+};
 
 // 4. Dispatch entry router routing transactional request state payloads
 inline void dispatch(const std::string &cmd, loginRequest &req) {
