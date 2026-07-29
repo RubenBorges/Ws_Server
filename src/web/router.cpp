@@ -63,11 +63,7 @@ void dispatch(const std::string &cmd, RequestVariant &req, ws_stream& ws) {
         std::println(std::cerr, "Command: '{}' not supported.", cmd);
         return;
     }
-    
-    // 4. Corrected execution: Pass the pointer to the variant (&req) and use the iterator 'it'
     it->second(&req, ws);
-
-    // 5. Cleaned up trailing example code to make it valid syntax
-    auto io = bpy::utility::make_io_context(); // Assuming factory returns a shared_ptr or io_context
-    // ws_stream wss{std::move(io)}; // Removed: Streams cannot be constructed directly from a factory object like this
+    auto io = bpy::utility::make_io_context();
+    // ws_stream ws{std::move(io)}; // Removed: Streams cannot be constructed directly from a factory object like this
 }

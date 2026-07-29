@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 #include <utility>
-#include <cstddef>
 extern std::vector<std::string> dataLogBuilder;
 extern std::vector<std::string> activeServerFilePaths;
 extern data::dataTransaction ThisDataTransaction;

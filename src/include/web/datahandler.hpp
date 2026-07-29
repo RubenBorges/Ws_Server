@@ -1,9 +1,14 @@
 #pragma once
 
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
 #include <boost/beast/websocket/stream.hpp>
+#include <cstdint>
+#include<web/client.hpp>
 #include <cstddef>
 #include <filesystem>
+#include <iostream>
 #include <string>
 #include <vector>
 // Custom definitions mapping network socket namespaces cleanly
@@ -24,9 +29,37 @@ enum class FileResult : int {
   WRITE_FAILURE = 32,
   PENDING = 64
 };
-struct WebSocket{
-  ws_stream ws;
+
+class WebSocket {
+public:
+    using error_code = boost::system::error_code;
+
+    // The constructor handles automatic initialization down the chain
+    WebSocket(p2p::web::ClientOptions _clientOpts = {"127.0.0.1", 4557}, int concurrency_hint = 2)
+        : io(concurrency_hint),socket(io),resolv(io),ws(std::move(socket)),clientOpts(_clientOpts){}
+
+    void connect() {
+        auto res = resolv.resolve(clientOpts.host, std::to_string(clientOpts.port), ec);
+        if (ec) {std::cerr << "Resolution failed: " << ec.message() << "\n";return;}
+
+        asio::connect(ws.next_layer(), res.begin(), res.end(), ec);
+        if (ec) {std::cerr << "Connection failed: " << ec.message() << "\n";return;}
+
+        ws.handshake(clientOpts.host, "/", ec);
+        if (ec) {std::cerr << "Handshake failed: " << ec.message() << "\n";return;}
+    }
+    boost::asio::io_context& IO(){return io;}
+// Variables are intentionally ordered by structural dependency constraints
+private:
+    boost::asio::io_context io;     // Context MUST be declared first
+    tcp::socket socket;             // Socket depends on Context
+    tcp::resolver resolv;           // Resolver depends on Context
+public:
+    ws_stream ws;                   // WebSocket stream wraps and owns the socket
+    p2p::web::ClientOptions clientOpts;
+    error_code ec;
 };
+
 struct dataTransaction {
   OP cmd;
   Result status{Result::PENDING};
