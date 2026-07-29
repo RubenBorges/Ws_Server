@@ -156,9 +156,9 @@ void handleDataSync(data::dataTransaction &tx) {
 
   //SEND
   case data::OP::TX: {
-     tx.fileResult = data_ops::writeBinaryFile(tx);
+    tx.fileResult = data_ops::sendBinaryToWebSocket(ws, tx);
     tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
-                                                   : data::Result::FAILURE;
+                                             : data::Result::FAILURE;
     break;
   }
 

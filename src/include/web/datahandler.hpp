@@ -8,6 +8,10 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+// Mapping network socket namespaces
+namespace asio = boost::asio;
+using tcp = asio::ip::tcp;
+using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
 namespace data {
 enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, CP = 8, MV = 16, DEL = 32 };
@@ -29,18 +33,16 @@ struct dataRequest {
 };
 
 struct dataTransaction {
+  
   OP cmd{OP::NOP};
   Result status{Result::PENDING};
   FileResult fileResult{FileResult::PENDING};
   std::filesystem::path targetPath;
   std::vector<uint8_t> memoryBuffer; 
+  ws_stream ws{};
 };
 } // namespace data
 
-// Mapping network socket namespaces
-namespace asio = boost::asio;
-using tcp = asio::ip::tcp;
-using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
 // Share state instances across different code files safely via extern declarations
 extern std::vector<std::string> dataLogBuilder;
