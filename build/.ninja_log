@@ -1,0 +1,15 @@
+# ninja log v7
+3	5123	1785315658274300684	src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o	da92b8c1d3d3458d
+1	8559	1785315658272300713	src/CMakeFiles/Ws_server.dir/server_main.cpp.o	739b48b68c9c20ba
+5124	8786	1785315663399226905	src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o	a06acc2b2aa695e2
+2	11246	1785315658274045169	src/CMakeFiles/Ws_client.dir/web/server.cpp.o	d6e38f36a3c83a66
+2	12291	1785315658273931596	src/CMakeFiles/Ws_client.dir/client_main.cpp.o	8d399e330d1d1204
+1	12403	1785315658273683222	src/CMakeFiles/Ws_server.dir/web/server.cpp.o	969379d0d95aab17
+1	12923	1785315658273784253	src/CMakeFiles/Ws_server.dir/web/client.cpp.o	7d4019f71ecb3756
+4	13038	1785315658275954864	src/CMakeFiles/ws_test.dir/web/server.cpp.o	47fec8b993766b7f
+12923	13111	1785315671194114686	src/Ws_server	45bc4f9cd00dd557
+2	13236	1785315658274167925	src/CMakeFiles/Ws_client.dir/web/client.cpp.o	5b345e21f6a22211
+13237	13411	1785315671508110165	src/Ws_client	6a8b7ac47069e07e
+5	14131	1785315658276744913	src/CMakeFiles/ws_test.dir/web/client.cpp.o	1f3a54a10cf40098
+4	11174	1785316098798956863	src/CMakeFiles/ws_test.dir/data.cpp.o	2c3499992e899cae
+11175	11397	1785316109970795945	src/ws_test	b99701f6c3bc5f46

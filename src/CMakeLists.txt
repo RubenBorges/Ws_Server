@@ -14,7 +14,9 @@ find_package(PostgreSQL REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(simdjson CONFIG REQUIRED)
 # Boost
-find_package(Boost CONFIG)
+#find_package(Boost CONFIG)
+# Find Boost and explicitly require the compiled random component
+find_package(Boost REQUIRED COMPONENTS random CONFIG)
 
 add_executable(Ws_server
     server_main.cpp
@@ -26,24 +28,29 @@ add_executable(Ws_client
     ${WEB_SOURCES}
 )
 add_executable(ws_test
-    main.cpp
+    BPY/DirectoryCrawler/DirectoryCrawler.cpp
+    data.cpp
     ${WEB_SOURCES}
     ${BP_SOURCES}
 )
 
 target_include_directories(Ws_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/BPY
     ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
 )
 
 target_include_directories(Ws_client PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/BPY
     ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
 )
 
 target_include_directories(ws_test PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/BPY
     ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
+    
 )
 
 target_link_libraries(Ws_server
@@ -64,6 +71,7 @@ target_link_libraries(ws_test
         libpqxx::pqxx
         OpenSSL::SSL
         OpenSSL::Crypto
+        Boost::random  
 )
 
 target_compile_options(Ws_server PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)

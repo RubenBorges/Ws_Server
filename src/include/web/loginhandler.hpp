@@ -19,7 +19,7 @@
 using uuid_T = boost::uuids::uuid;
 using sessionToken_t = std::string;
 
-enum class LogCmd : int { LOGIN, CREATE, LOGOUT, DEL };
+enum class LogCmd : int { LOGIN = 0 , CREATE = 1, LOGOUT = 2, DEL = 4 };
 enum class LogResult : int { SUCCESS = 0, FAILURE = 1, PENDING = 2 };
 
 struct loginCredentials {
@@ -33,9 +33,9 @@ struct loginCredentials {
 // User Account struct containing Login Info and UUID
 struct loginRequest {
   LogCmd cmd;
-  LogResult status{LogResult::PENDING};
   loginCredentials logCredentials;
   uuid_T uuid;
+  LogResult status{LogResult::PENDING};
 };
 
 struct Account {
@@ -107,7 +107,7 @@ inline std::string generateJWTSessionToken(
   return token;
 }
 
-inline bool validateLogin(const Account &acc,
+bool validateLogin(const Account &acc,
                           const loginCredentials &logInput) {
   return acc.loginCred == logInput;
 }
@@ -121,8 +121,7 @@ inline std::vector<std::string>
     logBuilder; // Fixed initialization (removed allocation size to avoid empty
                 // strings)
 
-inline std::unordered_map<uuid_T, Account> accountTable{
-    {uuidTable[0], Account{loginCredentials{"ADMIN", "PASSWD"}, uuidTable[0]}}};
+ std::unordered_map<uuid_T, Account> static accountTable{{uuidTable[0], Account{loginCredentials{"ADMIN", "PASSWD"}, uuidTable[0]}}};
 
 inline std::flat_map<std::string, uuid_T> nameToUUID = {
     {"Admin", uuidTable[0]}};
@@ -153,8 +152,7 @@ inline void login(loginRequest &logReq) {
       return pair.second.loginCred.username == logReq.logCredentials.username;
     });
 
-    if (it != accountTable.end() &&
-        logReq.logCredentials.password == it->second.loginCred.password) {
+    if (it != accountTable.end() && account::validateLogin(accountTable[it->second.uuid],logReq.logCredentials)){
       logReq.uuid = it->second.uuid;
 
       std::string generatedToken =

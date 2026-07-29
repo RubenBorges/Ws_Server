@@ -1,0 +1,5 @@
+/home/boopy/dev/Projects/ws_server/dist/bin/Ws_server
+/home/boopy/dev/Projects/ws_server/dist/bin/Ws_client
+/home/boopy/dev/Projects/ws_server/dist/bin/Ws_server
+/home/boopy/dev/Projects/ws_server/dist/bin/Ws_client
+/home/boopy/dev/Projects/ws_server/dist/bin/ws_test

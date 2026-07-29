@@ -1,22 +1,29 @@
+#pragma once
+
 #include <iostream>
 #include <random>
 #include <type_traits>
+#include <concepts>     
+#include <algorithm> // For std::min and std::max
 
-namespace bpy::utility{
+namespace bpy::utility {
+
+// 1. Constrain T using concepts to be either purely integral OR floating_point
 template <typename T>
+requires std::integral<T> || std::floating_point<T>
 T getRandomNumber(T x, T y) {
-    // 1. Initialize a random device to obtain a hardware seed
+    // 2. Initialize a random device to obtain a hardware seed
     static std::random_device rd;
     
-    // 2. Seed a standard pseudo-random engine (Mersenne Twister) once
+    // 3. Seed a standard pseudo-random engine (Mersenne Twister) once
     static std::mt19937 gen(rd());
 
-    // 3. Ensure the range is correctly ordered from low to high
+    // 4. Ensure the range is correctly ordered from low to high
     T low = std::min(x, y);
     T high = std::max(x, y);
 
-    // 4. Use the correct distribution type based on the data type
-    if constexpr (std::is_floating_point_v<T>) {
+    // 5. Compile-time branching based on numeric category
+    if constexpr (std::floating_point<T>) {
         std::uniform_real_distribution<T> dist(low, high);
         return dist(gen);
     } else {
@@ -24,7 +31,9 @@ T getRandomNumber(T x, T y) {
         return dist(gen);
     }
 }
-}
+
+} // namespace bpy::utility
+
 // int main() {
 //     // Pick an integer between 1 and 100 (inclusive)
 //     int randomInt = getRandomNumber(1, 100);
