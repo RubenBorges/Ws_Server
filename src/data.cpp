@@ -18,7 +18,7 @@
 int main() {
     // ---- Test Path 1: Execute a Login Flow ----
     // FIXED: Cleaned up structure list initializer elements to match loginRequest parameters
-    loginRequest myLogin{LogCmd::LOGIN, loginCredentials{"Admin", "PASSWD"}};
+    loginRequest myLogin{LogCmd::LOGIN, loginCredentials{"Admin", "PASSWD"},uuid_T{}};
 
     // Wrap the request inside the polymorphic variant
     RequestVariant loginPayload = myLogin; 
