@@ -128,16 +128,16 @@ data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx) {
   if (ec) {
     std::cerr << "WebSocket send failed: " << ec.message() << "\n";
     dataLogBuilder.push_back(std::format(
-        "T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed writing data to WebSocket",
-        std::chrono::system_clock::now()));
-  } else {
+      "T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed writing data to WebSocket",
+    std::chrono::system_clock::now()));
+    return data::FileResult::WRITE_FAILURE;}
+
     dataLogBuilder.push_back(
         std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Data successfully "
                     "written to WebSocket",
                     std::chrono::system_clock::now()));
-  }
+    return data::FileResult::SUCCESS;
 }
-
 } // namespace data_ops
 
 void handleDataSync(data::dataTransaction &tx) {
@@ -180,7 +180,7 @@ void handleDataSync(data::dataTransaction &tx) {
                         // compatibility boundaries
     std::filesystem::remove_all(tx.targetPath, ec);
     tx.status = (!ec) ? data::Result::SUCCESS : data::Result::FAILURE;
-    tx.status == data::Result::SUCCESS? data::FileResult::SUCCESS : data::FileResult::UNKNOWN_ERROR;
+    tx.fileResult = (tx.status == data::Result::SUCCESS)? data::FileResult::SUCCESS : data::FileResult::UNKNOWN_ERROR;
     break;
   }
 
