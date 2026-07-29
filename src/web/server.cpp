@@ -2,8 +2,9 @@
 
 #include <boost/asio/redirect_error.hpp>
 #include <boost/asio/use_awaitable.hpp>
-
-#include <istream>
+#include <boost/beast/websocket.hpp> 
+#include <web/router.hpp>           
+#include <iostream>
 #include <string>
 #include <utility>
 
@@ -69,37 +70,60 @@ asio::awaitable<void> AsyncEchoServer::accept_loop() {
     }
 }
 
-// Handles a single client connection by echoing received lines until shutdown.
+// Handles a single client connection by upgrading it to a WebSocket connection
 asio::awaitable<void> AsyncEchoServer::session_loop(tcp::socket socket) {
-    asio::streambuf read_buffer;
+    boost::system::error_code ec;
+
+    // 1. Upgrade the raw incoming TCP socket to a Boost.Beast WebSocket stream
+    ws_stream ws(std::move(socket));
+
+    // 2. Perform the async WebSocket handshake
+    co_await ws.async_accept(asio::redirect_error(asio::use_awaitable, ec));
+    if (ec) {
+        std::cerr << "WebSocket handshake failed: " << ec.message() << "\n";
+        co_return;
+    }
+
+    // 3. Allocate a dynamic buffer to hold raw incoming packet frames
+    boost::beast::flat_buffer read_buffer;
 
     while (!is_stopped()) {
-        boost::system::error_code ec;
-        co_await asio::async_read_until(
-            socket, read_buffer, '\n', asio::redirect_error(asio::use_awaitable, ec));
+        read_buffer.clear();
 
+        // 4. Read the next incoming frame asynchronously
+        co_await ws.async_read(read_buffer, asio::redirect_error(asio::use_awaitable, ec));
         if (ec) {
-            break;
+            if (ec == boost::beast::websocket::error::closed) {
+                std::cout << "Client gracefully closed connection.\n";
+            } else {
+                std::cerr << "WebSocket read error: " << ec.message() << "\n";
+            }
+            break; 
         }
 
-        std::istream input(&read_buffer);
-        std::string line;
-        std::getline(input, line);
+        // 5. Convert incoming payload buffer bytes into a string command
+        std::string incoming_msg(boost::asio::buffers_begin(read_buffer.data()),
+                                 boost::asio::buffers_end(read_buffer.data()));
 
-        if (line == options_.termination_command) {
-            const std::string shutdown_ack = "server shutting down\n";
-            co_await asio::async_write(
-                socket, asio::buffer(shutdown_ack), asio::redirect_error(asio::use_awaitable, ec));
+        // Check for termination command frame
+        if (incoming_msg == options_.termination_command) {
+            std::cout << "Termination command received. Shutting down server...\n";
             request_stop();
             break;
         }
 
-        line.push_back('\n');
-        co_await asio::async_write(
-            socket, asio::buffer(line), asio::redirect_error(asio::use_awaitable, ec));
+        // 6. Setup transaction context and fire it down into your variant router
+        // NOTE: Here we pass a mockup layout. Later, you can populate ThisDataTransaction 
+        // with fields parsed directly out of incoming_msg.
+        RequestVariant currentPayload = ThisDataTransaction; 
+        
+        // Dispatches the payload through the variant lookup matrix table
+        dispatch("data", currentPayload); 
 
-        if (ec) {
-            break;
+        // 7. Extract the modified payload data transaction state back out 
+        if (auto* txPtr = std::get_if<data::dataTransaction>(&currentPayload)) {
+            // Send the raw data transaction buffer right back down this specific WebSocket link
+            data_ops::sendBinaryToWebSocket(ws, *txPtr);
         }
     }
 }

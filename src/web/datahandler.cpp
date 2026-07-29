@@ -1,5 +1,5 @@
-#include "web/datahandler.hpp"
-#include "util.hpp"
+#include <web/datahandler.hpp>
+#include <BPY/util.hpp>
 #include <cstdio>
 #include <dir_crawler.hpp>
 
@@ -116,16 +116,18 @@ void sendBinaryToStdout(const data::dataTransaction &tx) {
 }
 
 // WRITE to WebSocket
-void sendBinaryToWebSocket(ws_stream &ws, const data::dataTransaction &tx) {
+data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx) {
+  ws_stream* const ws{tx.socketContext};
+  if (ws == nullptr) return data::FileResult::WRITE_FAILURE;
   dataLogBuilder.push_back(
       std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Writing data to WebSocket",
                   std::chrono::system_clock::now()));
   std::cout << "Sending " << tx.memoryBuffer.size()
             << " bytes of binary data via WebSocket...\n";
 
-  ws.binary(true);
+  ws->binary(true);
   boost::beast::error_code ec;
-  ws.write(boost::asio::buffer(tx.memoryBuffer.data(), tx.memoryBuffer.size()),
+  ws->write(boost::asio::buffer(tx.memoryBuffer.data(), tx.memoryBuffer.size()),
            ec);
 
   if (ec) {
@@ -156,7 +158,7 @@ void handleDataSync(data::dataTransaction &tx) {
 
   //SEND
   case data::OP::TX: {
-    tx.fileResult = data_ops::sendBinaryToWebSocket(ws, tx);
+    tx.fileResult = data_ops::sendBinaryToWebSocket(tx);
     tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
                                              : data::Result::FAILURE;
     break;
