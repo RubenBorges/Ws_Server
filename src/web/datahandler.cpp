@@ -1,6 +1,11 @@
 #include "web/datahandler.hpp"
+#include "util.hpp"
+#include <cstdio>
 #include <dir_crawler.hpp>
+
+#include <filesystem>
 #include <fstream>
+#include <print>
 // Define and initialize state tables safely inside exactly one compiled target
 // object
 std::vector<std::string> dataLogBuilder;
@@ -140,20 +145,24 @@ void sendBinaryToWebSocket(ws_stream &ws, const data::dataTransaction &tx) {
 
 void handleDataSync(data::dataTransaction &tx) {
   switch (tx.cmd) {
+
+  //Receive
   case data::OP::RX: {
-    data::FileResult res = data_ops::readBinaryFile(tx);
-    tx.status = (res == data::FileResult::SUCCESS) ? data::Result::SUCCESS
+    tx.fileResult = data_ops::readBinaryFile(tx);
+    tx.status = (tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
                                                    : data::Result::FAILURE;
     break;
   }
 
+  //SEND
   case data::OP::TX: {
-    data::FileResult res = data_ops::writeBinaryFile(tx);
-    tx.status = (res == data::FileResult::SUCCESS) ? data::Result::SUCCESS
+     tx.fileResult = data_ops::writeBinaryFile(tx);
+    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
                                                    : data::Result::FAILURE;
     break;
   }
 
+  //NEW FILE CREATION
   case data::OP::NEW: {
     dataLogBuilder.push_back(std::format(
         "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Crawl processing initiated.",
@@ -175,13 +184,32 @@ void handleDataSync(data::dataTransaction &tx) {
                         // compatibility boundaries
     std::filesystem::remove_all(tx.targetPath, ec);
     tx.status = (!ec) ? data::Result::SUCCESS : data::Result::FAILURE;
+    tx.status == data::Result::SUCCESS? data::FileResult::SUCCESS : data::FileResult::UNKNOWN_ERROR;
     break;
   }
-  case data::OP::CP:
-  case data::OP::MV:
 
-  case data::OP::NOP:
+  case data::OP::CP: 
+    tx.fileResult = data_ops::writeBinaryFile(tx);
+    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS
+                                                   : data::Result::FAILURE;
+    break;
+
+  case data::OP::MV:{
+    tx.fileResult = data_ops::writeBinaryFile(tx);
+    std::error_code ec;
+    std::filesystem::remove_all(tx.targetPath, ec);
+    tx.status = (!ec && tx.fileResult==data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
+    break;}
+
+  case data::OP::NOP: 
+    std::println("No OP Selected. Ignoring Transaction Request");
+    tx.fileResult = data::FileResult::SUCCESS;
+    tx.status = data::Result::SUCCESS;
+    break;
+
   default:
+    std::println("Unknown Transaction Failure");
+    tx.fileResult = data::FileResult::UNKNOWN_ERROR;
     tx.status = data::Result::FAILURE;
     break;
   }

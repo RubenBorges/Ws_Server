@@ -18,7 +18,8 @@ enum class FileResult : int {
   PERMISSION_DENIED = 2,
   READ_FAILED = 4,
   UNKNOWN_ERROR = 8,
-  OPEN_FAILURE = 16
+  OPEN_FAILURE = 16,
+  PENDING = 32
 };
 
 struct dataRequest {
@@ -30,6 +31,7 @@ struct dataRequest {
 struct dataTransaction {
   OP cmd{OP::NOP};
   Result status{Result::PENDING};
+  FileResult fileResult{FileResult::PENDING};
   std::filesystem::path targetPath;
   std::vector<uint8_t> memoryBuffer; 
 };

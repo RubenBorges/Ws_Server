@@ -1,5 +1,4 @@
-#include <fbptree/fbptree.hpp>
-
+#include <FBP_Tree.hpp>
 #include <cassert>
 #include <iostream>
 #include <random>

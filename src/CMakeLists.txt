@@ -13,9 +13,8 @@ find_package(libpqxx REQUIRED CONFIG)
 find_package(PostgreSQL REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(simdjson CONFIG REQUIRED)
-# Boost
+
 #find_package(Boost CONFIG)
-# Find Boost and explicitly require the compiled random component
 find_package(Boost REQUIRED COMPONENTS random CONFIG)
 
 add_executable(Ws_server
@@ -29,6 +28,9 @@ add_executable(Ws_client
 )
 add_executable(ws_test
     BPY/DirectoryCrawler/DirectoryCrawler.cpp
+    web/loginhandler.cpp
+    web/datahandler.cpp
+    web/router.cpp
     data.cpp
     ${WEB_SOURCES}
     ${BP_SOURCES}

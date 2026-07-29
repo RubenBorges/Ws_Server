@@ -30,7 +30,7 @@ int main() {
 
     // ---- Test Path 2: Execute a Data Transfer Flow ----
     data::dataTransaction myDataTx;
-    myDataTx.cmd = data::OP::RX;
+    myDataTx.cmd = data::OP::CP;
     myDataTx.targetPath = "/home/boopy/Pictures/out";
 
     // Wrap and dispatch seamlessly using the identical signature entry pointer

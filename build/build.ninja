@@ -228,6 +228,33 @@ build src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o: CX
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler
   TARGET_SUPPORT_DIR = src/CMakeFiles/ws_test.dir
 
+build src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_ws_test
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
+  DEP_FILE = src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o.d
+  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
+  OBJECT_DIR = src/CMakeFiles/ws_test.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
+  TARGET_SUPPORT_DIR = src/CMakeFiles/ws_test.dir
+
+build src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_ws_test
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
+  DEP_FILE = src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o.d
+  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
+  OBJECT_DIR = src/CMakeFiles/ws_test.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
+  TARGET_SUPPORT_DIR = src/CMakeFiles/ws_test.dir
+
+build src/CMakeFiles/ws_test.dir/web/router.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_ws_test
+  DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
+  DEP_FILE = src/CMakeFiles/ws_test.dir/web/router.cpp.o.d
+  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
+  OBJECT_DIR = src/CMakeFiles/ws_test.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
+  TARGET_SUPPORT_DIR = src/CMakeFiles/ws_test.dir
+
 build src/CMakeFiles/ws_test.dir/data.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/data.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/data.cpp.o.d
@@ -272,7 +299,7 @@ build src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o: CXX_COMPILER__ws_tes
 #############################################
 # Link the executable src/ws_test
 
-build src/ws_test: CXX_EXECUTABLE_LINKER__ws_test_ src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o src/CMakeFiles/ws_test.dir/data.cpp.o src/CMakeFiles/ws_test.dir/web/server.cpp.o src/CMakeFiles/ws_test.dir/web/client.cpp.o src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libboost_random.so.1.91.0 /usr/lib/libpq.so
+build src/ws_test: CXX_EXECUTABLE_LINKER__ws_test_ src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o src/CMakeFiles/ws_test.dir/web/router.cpp.o src/CMakeFiles/ws_test.dir/data.cpp.o src/CMakeFiles/ws_test.dir/web/server.cpp.o src/CMakeFiles/ws_test.dir/web/client.cpp.o src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o | /usr/local/lib/libpqxx-8.0.a /usr/lib/libssl.so /usr/lib/libcrypto.so /usr/lib/libboost_random.so.1.91.0 /usr/lib/libpq.so
   DEP_FILE = src/CMakeFiles/ws_test.dir/link.d
   LINK_FLAGS = -Wl,--dependency-file=src/CMakeFiles/ws_test.dir/link.d
   LINK_LIBRARIES = /usr/local/lib/libpqxx-8.0.a  /usr/lib/libssl.so  /usr/lib/libcrypto.so  /usr/lib/libboost_random.so.1.91.0  /usr/lib/libpq.so

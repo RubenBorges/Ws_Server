@@ -1,4 +1,3 @@
-//#include "../include/fbptree/fbptree.hpp"
 #include <FBP_Tree.hpp>
 #include <algorithm>
 #include <cassert>
