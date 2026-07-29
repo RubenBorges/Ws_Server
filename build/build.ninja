@@ -118,7 +118,7 @@ build cmake_object_order_depends_target_Ws_server: phony || .
 build src/CMakeFiles/Ws_server.dir/server_main.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/server_main.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/server_main.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir
@@ -127,7 +127,7 @@ build src/CMakeFiles/Ws_server.dir/server_main.cpp.o: CXX_COMPILER__Ws_server_un
 build src/CMakeFiles/Ws_server.dir/web/server.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/server.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/server.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir/web
@@ -136,7 +136,7 @@ build src/CMakeFiles/Ws_server.dir/web/server.cpp.o: CXX_COMPILER__Ws_server_uns
 build src/CMakeFiles/Ws_server.dir/web/client.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/client.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/client.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir/web
@@ -145,7 +145,7 @@ build src/CMakeFiles/Ws_server.dir/web/client.cpp.o: CXX_COMPILER__Ws_server_uns
 build src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir/web
@@ -154,7 +154,7 @@ build src/CMakeFiles/Ws_server.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_serv
 build src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir/web
@@ -163,7 +163,7 @@ build src/CMakeFiles/Ws_server.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_serve
 build src/CMakeFiles/Ws_server.dir/web/router.cpp.o: CXX_COMPILER__Ws_server_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_Ws_server
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_server.dir/web/router.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_server.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_server.dir/web
@@ -200,7 +200,7 @@ build cmake_object_order_depends_target_Ws_client: phony || .
 build src/CMakeFiles/Ws_client.dir/client_main.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/client_main.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/client_main.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir
@@ -209,7 +209,7 @@ build src/CMakeFiles/Ws_client.dir/client_main.cpp.o: CXX_COMPILER__Ws_client_un
 build src/CMakeFiles/Ws_client.dir/web/server.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/server.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/server.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir/web
@@ -218,7 +218,7 @@ build src/CMakeFiles/Ws_client.dir/web/server.cpp.o: CXX_COMPILER__Ws_client_uns
 build src/CMakeFiles/Ws_client.dir/web/client.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/client.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/client.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir/web
@@ -227,7 +227,7 @@ build src/CMakeFiles/Ws_client.dir/web/client.cpp.o: CXX_COMPILER__Ws_client_uns
 build src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir/web
@@ -236,7 +236,7 @@ build src/CMakeFiles/Ws_client.dir/web/loginhandler.cpp.o: CXX_COMPILER__Ws_clie
 build src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir/web
@@ -245,7 +245,7 @@ build src/CMakeFiles/Ws_client.dir/web/datahandler.cpp.o: CXX_COMPILER__Ws_clien
 build src/CMakeFiles/Ws_client.dir/web/router.cpp.o: CXX_COMPILER__Ws_client_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_Ws_client
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/Ws_client.dir/web/router.cpp.o.d
-  FLAGS = -std=c++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O2 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/Ws_client.dir
   OBJECT_FILE_DIR = src/CMakeFiles/Ws_client.dir/web
@@ -282,7 +282,7 @@ build cmake_object_order_depends_target_ws_test: phony || .
 build src/CMakeFiles/ws_test.dir/data.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/data.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/data.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir
@@ -291,7 +291,7 @@ build src/CMakeFiles/ws_test.dir/data.cpp.o: CXX_COMPILER__ws_test_unscanned_ /h
 build src/CMakeFiles/ws_test.dir/web/server.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/server.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/web/server.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
@@ -300,7 +300,7 @@ build src/CMakeFiles/ws_test.dir/web/server.cpp.o: CXX_COMPILER__ws_test_unscann
 build src/CMakeFiles/ws_test.dir/web/client.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/client.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/web/client.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
@@ -309,7 +309,7 @@ build src/CMakeFiles/ws_test.dir/web/client.cpp.o: CXX_COMPILER__ws_test_unscann
 build src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/loginhandler.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
@@ -318,7 +318,7 @@ build src/CMakeFiles/ws_test.dir/web/loginhandler.cpp.o: CXX_COMPILER__ws_test_u
 build src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/datahandler.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
@@ -327,7 +327,7 @@ build src/CMakeFiles/ws_test.dir/web/datahandler.cpp.o: CXX_COMPILER__ws_test_un
 build src/CMakeFiles/ws_test.dir/web/router.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/web/router.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/web/router.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/web
@@ -336,7 +336,7 @@ build src/CMakeFiles/ws_test.dir/web/router.cpp.o: CXX_COMPILER__ws_test_unscann
 build src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/BPY/DirectoryCrawler/DirectoryCrawler.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler
@@ -345,7 +345,7 @@ build src/CMakeFiles/ws_test.dir/BPY/DirectoryCrawler/DirectoryCrawler.cpp.o: CX
 build src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o: CXX_COMPILER__ws_test_unscanned_ /home/boopy/dev/Projects/ws_server/src/BPY/fbptree/fbptree.cpp || cmake_object_order_depends_target_ws_test
   DEFINES = -DBOOST_RANDOM_DYN_LINK -DBOOST_RANDOM_NO_LIB
   DEP_FILE = src/CMakeFiles/ws_test.dir/BPY/fbptree/fbptree.cpp.o.d
-  FLAGS = -std=c++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
+  FLAGS = -std=gnu++26 -O3 -Wall -Wextra -Wno-mismatched-new-delete
   INCLUDES = -I/home/boopy/dev/Projects/ws_server/src/include -I/home/boopy/dev/Projects/ws_server/src/include/BPY -I/home/boopy/dev/Projects/ws_server/src/include/extern
   OBJECT_DIR = src/CMakeFiles/ws_test.dir
   OBJECT_FILE_DIR = src/CMakeFiles/ws_test.dir/BPY/fbptree

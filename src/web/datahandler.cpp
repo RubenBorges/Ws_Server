@@ -1,15 +1,30 @@
-#include <web/datahandler.hpp>
 #include <BPY/util.hpp>
+#include <boost/beast.hpp>
+#include <boost/asio.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/beast/core/stream_traits.hpp>
+#include <boost/asio/streambuf.hpp>
+#include <string>
+#include <web/datahandler.hpp>
+#include <web/router.hpp>
 #include <fstream>
 #include <iostream>
+#include <variant>
 #include <format>
 #include <chrono>
 #include <print>
+using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
+namespace asio = boost::asio;
+using tcp = asio::ip::tcp;
+using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 // Allocate your global variable storage targets exactly once here in memory
 std::vector<std::string> dataLogBuilder;
 std::vector<std::string> activeServerFilePaths;
-data::dataTransaction ThisDataTransaction;
 
+RequestVariant req;
 namespace data_ops {
 
 data::FileResult readBinaryFile(data::dataTransaction &tx) {
@@ -20,12 +35,8 @@ data::FileResult readBinaryFile(data::dataTransaction &tx) {
 
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    tx.memoryBuffer.resize(size);
-
-    if (file.read(reinterpret_cast<char*>(tx.memoryBuffer.data()), size)) {
-        return data::FileResult::SUCCESS;
-    }
-    return data::FileResult::READ_FAILED;
+    tx.memoryBuffer.reserve(size);
+    return ( file.read(reinterpret_cast<char*>(tx.memoryBuffer.data()), size))? data::FileResult::SUCCESS: data::FileResult::READ_FAILED;
 }
 
 data::FileResult writeBinaryFile(const data::dataTransaction &tx) {
@@ -60,38 +71,36 @@ data::FileResult sendBinaryToStdout(const data::dataTransaction &tx) {
     return data::FileResult::SUCCESS;
 }
 
-data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx) {
-    if (!tx.socketContext) return data::FileResult::WRITE_FAILURE;
+data::FileResult sendBinaryToWebSocket(const data::dataTransaction tx) {
+    if (!tx.ws->is_open()) {
+      std::println("ERROR: WebSocket Access FAILURE");
+      return data::FileResult::WRITE_FAILURE;
+    }
     
-    tx.socketContext->binary(true);
+    //tx.ws.async_write(tx.memoryBuffer);
     boost::beast::error_code ec;
-    tx.socketContext->write(boost::asio::buffer(tx.memoryBuffer.data(), tx.memoryBuffer.size()), ec);
-    
+    std::stringstream ss; 
+    std::string temp;
+    for (auto elem : tx.memoryBuffer) ss<<(char*)elem;
+    std::string my_str = std::move(ss).str(); 
     return ec ? data::FileResult::WRITE_FAILURE : data::FileResult::SUCCESS;
 }
 
 data::FileResult readBinaryFromWebSocket(data::dataTransaction &tx) {
-    if (!tx.socketContext) return data::FileResult::READ_FAILED;
-
+    if (!tx.ws) return data::FileResult::READ_FAILED;
     boost::beast::flat_buffer dynamic_buffer;
     boost::beast::error_code ec;
-    tx.socketContext->read(dynamic_buffer, ec);
+    tx.ws->read(dynamic_buffer, ec);
     if (ec) return data::FileResult::READ_FAILED;
-
-    auto data_view = dynamic_buffer.data();
-    const uint8_t* raw_bytes = reinterpret_cast<const uint8_t*>(data_view.data());
-    tx.memoryBuffer.assign(raw_bytes, raw_bytes + data_view.size());
-
+    size_t bytes_received = dynamic_buffer.size();     // 1. Get the total number of bytes received
+    tx.memoryBuffer.resize(bytes_received);  // 2. Resize your destination vector to match the incoming data size
+    boost::asio::buffer_copy(                         // 3. Copy the fragmented/flat buffer data into your contiguous std::byte vector
+        boost::asio::buffer(tx.memoryBuffer.data(), tx.memoryBuffer.size()), 
+        dynamic_buffer.data());
     return data::FileResult::SUCCESS;
 }
-
 } // namespace data_ops
 
-
-void handleDataSync(data::dataTransaction &tx, ::ws_stream& ws) {
-    tx.socketContext = &ws;
-    handleDataSync(tx);
-}
 
 void handleDataSync(data::dataTransaction &tx) {
 

@@ -15,8 +15,9 @@ using ws_stream = boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
 void handleLogin(loginRequest &req);
-void handleDataRequest(data::dataTransaction &req); // Hand over mapping engine
+void handleDataRequest(data::dataTransaction *request) ;
+//void handleDataRequest(data::dataTransaction *request) ;
+//extern const std::unordered_map<std::string, std::function<void(RequestVariant&, ws_stream&)>> functionTable;
+extern const std::unordered_map<std::string, std::function<void(RequestVariant*, ws_stream&)>> functionTable;
 
-extern const std::unordered_map<std::string, std::function<void(RequestVariant&, ws_stream&)>> functionTable;
-
-void dispatch(const std::string &cmd, RequestVariant& req, ws_stream* ws);
+void dispatch(const std::string &cmd, RequestVariant& req, ws_stream& ws);

@@ -1,100 +1,102 @@
 #pragma once
 
-#include <algorithm> // For std::min and std::max
-#include <cerrno>    // For tracking kernel error flags
+#include <web/datahandler.hpp>
+#include <web/loginhandler.hpp>
+#include <algorithm> 
+#include <cerrno>    
 #include <concepts>
 #include <filesystem>
-#include <cstring> // For std::strerror
-#include <fcntl.h> // For AT_FDCWD and AT_REMOVEDIR flags [1]
+#include <cstring> 
+#include <fcntl.h> 
 #include <iostream>
 #include <random>
 #include <sys/stat.h>
-#include <sys/syscall.h> // For SYS_unlinkat macro definitions [1]
+#include <sys/syscall.h> 
 #include <fstream>
-#include <unistd.h> // For syscall() definitions
+#include <unistd.h>
+#include <boost/asio/io_context.hpp>
+#include <memory>
+#include <string>
+#include <type_traits>
 
 namespace bpy {
+
+// Relocated structural mocks to top for cleaner forward-declaration resolution
+struct loginRequest {};
+namespace data { 
+    struct dataTransaction {}; 
+}
+
 namespace utility {
 
+// FIXED: Added std::move because io_context cannot be copied
+inline boost::asio::io_context make_io_context(int thread_count = 1) {
+    return boost::asio::io_context(thread_count); 
+}
+
+inline std::shared_ptr<boost::asio::io_context> make_shared_io_context(int thread_count = 1) {
+    return std::make_shared<boost::asio::io_context>(thread_count);
+}
+
 inline bool isTargetDirectory(const std::string &path) {
-  struct stat pathStat;
-  // 1. Invoke the stat system call to pull the target metadata
-  // Returns 0 on success, -1 on failure (e.g. path does not exist)
-  if (::stat(path.c_str(), &pathStat) != 0) {
-    std::cerr << "Metadata read failed for [" << path
-              << "] | Error: " << std::strerror(errno) << "\n";
-    return false;
-  }
-  // 2. Evaluate the st_mode bitmask using the built-in kernel macro
-  return S_ISDIR(pathStat.st_mode);
+    struct stat pathStat;
+    if (::stat(path.c_str(), &pathStat) != 0) {
+        std::cerr << "Metadata read failed for [" << path
+                  << "] | Error: " << std::strerror(errno) << "\n";
+        return false;
+    }
+    return S_ISDIR(pathStat.st_mode);
 }
 
 inline bool removeTargetViaSyscall(const std::string &pathTarget) {
-  // 1. Configure the removal flags based on the target type
-  int flags = isTargetDirectory(pathTarget)
-                  ? AT_REMOVEDIR
-                  : 0; // If it's a directory, we must pass AT_REMOVEDIR,
-                       // otherwise pass 0 for a file [1]
+    int flags = isTargetDirectory(pathTarget) ? AT_REMOVEDIR : 0;
 
-  // 2. Invoke the kernel directly
-  auto result = syscall(SYS_unlinkat, AT_FDCWD, pathTarget.c_str(),
-                        flags); // AT_FDCWD tells the kernel that 'path' is
-                                // relative to the current working directory [1]
+    auto result = syscall(SYS_unlinkat, AT_FDCWD, pathTarget.c_str(), flags);
 
-  // 3. Evaluate kernel return state (0 is success, -1 is failure)
-  if (result == 0)
-    return true;
-  return false; // If it failed, the global 'errno' variable holds the exact
-                // kernel failure reason
-};
+    if (result == 0)
+        return true;
+    return false; 
+}
+
 inline bool createEmptyFile(const std::filesystem::path& filePath) {
-
-    if (filePath.has_parent_path()) {     // 1. Optional: Ensure the folder structure leading up to the file exists
+    if (filePath.has_parent_path()) {     
         std::filesystem::create_directories(filePath.parent_path());
     }
-    std::ofstream file(filePath);    // 2. Open the stream. Opening in output mode automatically creates the file if it's missing.
-    if (file.is_open()) {std::cout << "File created successfully: " << filePath << "\n";
-    } else{
+    std::ofstream file(filePath);    
+    if (file.is_open()) {
+        std::cout << "File created successfully: " << filePath << "\n";
+    } else {
         std::cerr << "Failed to create file: " << filePath << "\n";
         return false;
     }
     return true;
 }
 
-// 1. Constrain T using concepts to be either purely integral OR floating_point
+// FIXED: Wrapped int_distribution with conditional compilation to support short ints/chars
 template <typename T>
   requires std::integral<T> || std::floating_point<T>
 T getRandomNumber(T x, T y) {
-  // 2. Initialize a random device to obtain a hardware seed
-  static std::random_device rd;
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
 
-  // 3. Seed a standard pseudo-random engine (Mersenne Twister) once
-  static std::mt19937 gen(rd());
+    T low = std::min(x, y);
+    T high = std::max(x, y);
 
-  // 4. Ensure the range is correctly ordered from low to high
-  T low = std::min(x, y);
-  T high = std::max(x, y);
-
-  // 5. Compile-time branching based on numeric category
-  if constexpr (std::floating_point<T>) {
-    std::uniform_real_distribution<T> dist(low, high);
-    return dist(gen);
-  } else {
-    std::uniform_int_distribution<T> dist(low, high);
-    return dist(gen);
-  }
+    if constexpr (std::floating_point<T>) {
+        std::uniform_real_distribution<T> dist(low, high);
+        return dist(gen);
+    } else {
+        // Boost/std::uniform_int_distribution doesn't allow char, uint8_t, etc.
+        // We type-promote types smaller than int safely at compile time.
+        using DistributionType = std::conditional_t<
+            sizeof(T) < sizeof(int), 
+            int, 
+            T
+        >;
+        std::uniform_int_distribution<DistributionType> dist(static_cast<DistributionType>(low), static_cast<DistributionType>(high));
+        return static_cast<T>(dist(gen));
+    }
 }
+
 } // namespace utility
 } // namespace bpy
-
-// int main() {
-//     // Pick an integer between 1 and 100 (inclusive)
-//     int randomInt = getRandomNumber(1, 100);
-//     std::cout << "Random Int: " << randomInt << "\n";
-
-//     // Pick a float between 1.5 and 9.5 (inclusive)
-//     double randomDouble = getRandomNumber(1.5, 9.5);
-//     std::cout << "Random Double: " << randomDouble << "\n";
-
-//     return 0;
-// }

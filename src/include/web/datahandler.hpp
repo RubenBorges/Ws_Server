@@ -2,7 +2,7 @@
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/websocket/stream.hpp>
-#include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -24,29 +24,23 @@ enum class FileResult : int {
   WRITE_FAILURE = 32,
   PENDING = 64
 };
-
-// Upgrade dataTransaction to handle BOTH binary data and multi-path queries
+struct WebSocket{
+  ws_stream ws;
+};
 struct dataTransaction {
-  OP cmd{OP::NOP};
+  OP cmd;
   Result status{Result::PENDING};
   FileResult fileResult{FileResult::PENDING};
-  
-  // 1. Single-file target path (used for RX, TX, DEL)
   std::filesystem::path targetPath;
-  
-  // 2. Collection path pool (Replaces dataRequest::filepaths!)
-  // Useful for directory crawling (NEW), multi-file copying (CP), or moving (MV)
   std::vector<std::string> filepaths; 
-  
-  // 3. Holds the absolute root folder destination for operations
   std::filesystem::path outputPath{"/home/boopy"};
-  
-  // 4. In-memory data payload block
-  std::vector<uint8_t> memoryBuffer; 
-  
-  // 5. Active non-copyable client connection channel
-  ws_stream* socketContext{nullptr}; 
-};
+  std::vector<std::byte> memoryBuffer; 
+  ws_stream* ws;  
+  // Pass by value and std::move it into the member variable
+  dataTransaction(std::string _targetPath, int reserveSize, std::string _outputPath, ws_stream* _ws, OP operation = OP::NOP)
+  : targetPath(_targetPath), outputPath(_outputPath), ws(_ws){
+    cmd=operation; filepaths.reserve(reserveSize); memoryBuffer.reserve(reserveSize);
+  }};
 } // namespace data
 
 // Share state instances across different source files safely via extern declarations
@@ -59,8 +53,8 @@ data::FileResult readBinaryFile(data::dataTransaction &tx);
 data::FileResult writeBinaryFile(const data::dataTransaction &tx);
 data::FileResult writeToFile(const data::dataTransaction &tx);
 data::FileResult sendBinaryToStdout(const data::dataTransaction &tx);
-data::FileResult sendBinaryToWebSocket(const data::dataTransaction &tx);
+data::FileResult sendBinaryToWebSocket(const data::dataTransaction tx);
 data::FileResult readBinaryFromWebSocket(data::dataTransaction &tx); // Removed const so we can safely mutate memoryBuffer
 } // namespace data_ops
 void handleDataSync(data::dataTransaction &tx);
-void handleDataSync(data::dataTransaction &tx, ::ws_stream& ws);
+//void handleDataSync(data::dataTransaction &tx, ::ws_stream& ws);
