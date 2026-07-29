@@ -1,0 +1,177 @@
+
+//SpanningTree.hpp
+//
+//#include <queue>
+#include <unordered_map>
+#include <memory>
+
+class SpanningTree {
+private:
+    Node* rootNode{nullptr};
+    // unique_ptr ensures no memory leaks for Nodes
+    std::unordered_map<int, std::unique_ptr<Node>> nodes;
+
+public:
+    void buildFromGraph(const Graph& g, int rootId) {
+        std::queue<int> q;
+        std::vector<bool> visited(g.getNumVertices(), false);
+
+        // 1. Initialize Root
+        nodes[rootId] = std::make_unique<Node>(rootId, nullptr);
+        rootNode = nodes[rootId].get();
+
+        visited[rootId] = true;
+        q.push(rootId);
+
+        // 2. Build Hierarchy via BFS
+        while (!q.empty()) {
+            int currentId = q.front();
+            q.pop();
+
+            for (int neighborId : g.getNeighbors(currentId)) {
+                if (!visited[neighborId]) {
+                    visited[neighborId] = true;
+
+                    // Create child with 'current' as parent
+                    nodes[neighborId] = std::make_unique<Node>(neighborId, nodes[currentId].get());
+
+                    // Link parent to child
+                    nodes[currentId]->child.push_back(nodes[neighborId].get());
+
+                    q.push(neighborId);
+                }
+            }
+        }
+    }
+
+    // Kick off the process
+    void start(const std::string& msg) {
+        if (rootNode) {
+            rootNode->go(msg);
+        } else {
+            std::cerr << "Error: Tree not built yet!" << std::endl;
+        }
+    }
+};
+-------------------
+//Node.hpp
+
+#include <vector>
+#include <string>
+#include <iostream>
+
+struct Node {
+    int id;
+    int localValue;
+    Node* parent{nullptr};
+    std::vector<Node*> child;
+
+    size_t responsesReceived = 0;
+    int accumulatedValue = 0;
+
+    Node(int _id, Node* _parent)
+        : id(_id), localValue(_id * 10), parent(_parent) {}
+
+    bool isRoot() const { return parent == nullptr; }
+
+    void go(const std::string& msg) {
+        std::cout << "Node " << id << " received: " << msg << std::endl;
+
+        // Special Case: I am a leaf (no children)
+        if (child.empty()) {
+            this->back(localValue);
+            return;
+        }
+
+        // Recursive Step: Tell all children to 'go'
+        for (Node* c : child) {
+            c->go(msg);
+        }
+    }
+
+    void back(int value) {
+        // If this is a self-call from a leaf, 'value' is localValue.
+        // If this is from a child, 'value' is that child's total subtree sum.
+
+        if (isRoot()) {
+            // Root logic
+            if (child.empty()) {
+                // Root is the only node in the tree
+                printFinalResult(localValue);
+            } else {
+                accumulatedValue += value;
+                responsesReceived++;
+                if (responsesReceived == child.size()) {
+                    printFinalResult(accumulatedValue + localValue);
+                    // Reset
+                    accumulatedValue = 0;
+                    responsesReceived = 0;
+                }
+            }
+        } else {
+            // Internal Node logic
+            accumulatedValue += value;
+            responsesReceived++;
+
+            if (responsesReceived == child.size()) {
+                int totalToSend = accumulatedValue + localValue;
+                // Reset before moving up
+                accumulatedValue = 0;
+                responsesReceived = 0;
+                parent->back(totalToSend);
+            }
+        }
+    }
+
+private:
+    void printFinalResult(int total) {
+        std::cout << "\n>>> CONVERGECAST COMPLETE <<<\n";
+        std::cout << "Root (ID " << id << ") Total Network Sum: " << total << std::endl;
+    }
+};
+----
+
+//Graph.hpp
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+class Graph {
+private:
+    int numVertices;
+    // adjacencyList[u] contains a list of all neighbors 'v'
+    std::vector<std::vector<int>> adjList;
+
+public:
+    explicit Graph(int vertices) : numVertices(vertices) {
+        adjList.resize(vertices);
+    }
+
+    // Add an undirected edge (typical for network spanning trees)
+    void addEdge(int u, int v) {
+        if (u >= 0 && u < numVertices && v >= 0 && v < numVertices) {
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
+        }
+    }
+
+    // Getter for the neighbors of a specific node
+    const std::vector<int>& getNeighbors(int u) const {
+        return adjList.at(u);
+    }
+
+    int getNumVertices() const {
+        return numVertices;
+    }
+
+    void printGraph() const {
+        for (int i = 0; i < numVertices; ++i) {
+            std::cout << i << ": ";
+            for (int neighbor : adjList[i]) {
+                std::cout << neighbor << " ";
+            }
+            std::cout << "\n";
+        }
+    }
+};
