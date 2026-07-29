@@ -2,12 +2,11 @@
 #include <BPY/util.hpp>
 #include <cstdio>
 #include <dir_crawler.hpp>
-
 #include <filesystem>
 #include <fstream>
 #include <print>
-// Define and initialize state tables safely inside exactly one compiled target
-// object
+
+// Define and initialize state tables safely inside exactly one compiled target object
 std::vector<std::string> dataLogBuilder;
 std::vector<std::string> activeServerFilePaths;
 data::dataTransaction ThisDataTransaction;
@@ -68,34 +67,30 @@ data::FileResult readBinaryFile(data::dataTransaction &tx) {
     return data::FileResult::SUCCESS;
    }
 
-// data::FileResult writeBinaryFile(const data::dataTransaction &tx) {
-//   dataLogBuilder.push_back(
-//       std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Writing data to File: {}",
-//                   std::chrono::system_clock::now(), tx.targetPath.string()));
-
-//   if (tx.targetPath.has_parent_path()) {
-//     std::filesystem::create_directories(tx.targetPath.parent_path());
-//   }
-
-//   std::ofstream outFile(tx.targetPath, std::ios::binary);
-//   if (!outFile.is_open()) {
-//     dataLogBuilder.push_back(std::format(
-//         "T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed writing data to File: {}",
-//         std::chrono::system_clock::now(), tx.targetPath.string()));
-//     return data::FileResult::OPEN_FAILURE;
-//   }
-
-//   std::span<const uint8_t> dataSpan(tx.memoryBuffer);
-//   auto byteSpan = std::as_bytes(dataSpan);
-//   outFile.write(reinterpret_cast<const char *>(byteSpan.data()),
-//                 byteSpan.size_bytes());
-
-//   dataLogBuilder.push_back(std::format(
-//       "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Data successfully written to File: {}",
-//       std::chrono::system_clock::now(), tx.targetPath.string()));
-//   return outFile.good() ? data::FileResult::SUCCESS
-//                         : data::FileResult::READ_FAILED;
-// }
+ data::FileResult writeToFile(const data::dataTransaction &tx ) {
+   dataLogBuilder.push_back(
+       std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Writing data to File: {}",
+                   std::chrono::system_clock::now(), tx.targetPath.string()));
+   if (tx.targetPath.has_parent_path()) {
+     std::filesystem::create_directories(tx.targetPath.parent_path());
+   }
+   std::ofstream outFile(tx.targetPath, std::ios::binary);
+   if (!outFile.is_open()) {
+     dataLogBuilder.push_back(std::format(
+         "T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed writing data to File: {}",
+         std::chrono::system_clock::now(), tx.targetPath.string()));
+     return data::FileResult::OPEN_FAILURE;
+   }
+   std::span<const uint8_t> dataSpan(tx.memoryBuffer);
+   auto byteSpan = std::as_bytes(dataSpan);
+   outFile.write(reinterpret_cast<const char *>(byteSpan.data()),
+                 byteSpan.size_bytes());
+   dataLogBuilder.push_back(std::format(
+       "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Data successfully written to File: {}",
+       std::chrono::system_clock::now(), tx.targetPath.string()));
+   return outFile.good() ? data::FileResult::SUCCESS
+                         : data::FileResult::READ_FAILED;
+ }
 
 // WRITE to stdout
 void sendBinaryToStdout(const data::dataTransaction &tx) {

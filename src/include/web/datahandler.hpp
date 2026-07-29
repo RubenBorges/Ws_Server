@@ -56,6 +56,7 @@ extern data::dataTransaction ThisDataTransaction;
 namespace data_ops {
 data::FileResult readBinaryFile(data::dataTransaction &tx);
 data::FileResult writeBinaryFile(const data::dataTransaction &tx);
+data::FileResult writeToFile(const data::dataTransaction &tx );
 void sendBinaryToStdout(const data::dataTransaction &tx);
 void sendBinaryToWebSocket(ws_stream &ws, const data::dataTransaction &tx);
 } // namespace data_ops
