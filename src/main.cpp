@@ -2,8 +2,8 @@
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/use_future.hpp>
-#include <BPY/spanningtree.hpp>
-#include <BPY/fbptree.hpp>
+#include <spanningtree.hpp>
+#include <FBP_Tree.hpp>
 
 #include <BPY/DirectoryCrawler.hpp>
 #include <web/client.hpp>

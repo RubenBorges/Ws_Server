@@ -24,7 +24,7 @@
 #include <vector>
 #include <web/datahandler.hpp>
 #include <web/loginhandler.hpp>
-#include <web/handler.hpp>
+#include <web/router.hpp>
 int main() {
     // ---- Test Path 1: Execute a Login Flow ----
     loginRequest myLogin{LogCmd::LOGIN, {"Admin", "PASSWD"},{}};

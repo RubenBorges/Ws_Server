@@ -1,26 +1,16 @@
 #pragma once
 
-#include "dir_crawler.hpp"
 #include <BPY/util.hpp>
-#include <algorithm>
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/websocket.hpp>
-#include <chrono>
-#include <cstddef>
 #include <cstdint>
-#include <cstdlib>
 #include <filesystem>
-#include <format>
-#include <fstream>
-#include <iostream>
-#include <print>
-#include <span>
 #include <string>
 #include <vector>
 
 namespace data {
-enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, DEL = 8 };
+enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, CP = 8, MV = 16, DEL = 32 };
 enum class Result : int { SUCCESS = 0, FAILURE = 1, PENDING = 2 };
 enum class FileResult : int {
   SUCCESS = 0,
