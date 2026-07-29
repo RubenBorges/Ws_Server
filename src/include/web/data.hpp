@@ -56,7 +56,7 @@ public:
   using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
   DataProcessor() : _buffer(), _bufferList(nullptr) {} // FIXED: removed extra semicolon
-
+//READING DATA 
   FileResult readBinaryFile(const std::string &filePath) {
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
@@ -93,47 +93,20 @@ public:
       return FileResult::SUCCESS;
     }
     return FileResult::READ_FAILED;
-  } // FIXED: removed trailing semicolon
-
+  } 
+  //SENDING DATA 
   void sendBinaryData(const uint8_t *data, size_t size) {
     std::cout << "Sending " << size << " bytes of binary data...\n";
 
-    for (size_t i = 0; i < std::min(size, size_t(5)); ++i) {
+    for (size_t i = 0; i < size; ++i) {
       std::cout << "0x" << std::hex << static_cast<int>(data[i]) << " ";
     }
     std::cout << "\n";
-  } // FIXED: removed trailing semicolon
+  } 
 
-  FileResult writeBinaryFile(const std::string &path, const std::vector<uint8_t> &buffer) {
-    std::ofstream outFile(path, std::ios::binary);
-    if (!outFile.is_open())
-      return FileResult::OPEN_FAILURE;
-
-    std::span<const uint8_t> dataSpan(buffer);
-    auto byteSpan = std::as_bytes(dataSpan);
-    outFile.write(reinterpret_cast<const char *>(byteSpan.data()), byteSpan.size_bytes());
-
-    return FileResult::SUCCESS;
-  } // FIXED: removed trailing semicolon
-
-  FileResult writeBinaryFile(const std::filesystem::path &path, const std::vector<uint8_t> &buffer) {
-    if (path.has_parent_path()) {
-      std::filesystem::create_directories(path.parent_path());
-    }
-
-    std::ofstream outFile(path, std::ios::binary);
-    if (!outFile.is_open())
-      return FileResult::OPEN_FAILURE;
-
-    std::span<const uint8_t> dataSpan(buffer);
-    auto byteSpan = std::as_bytes(dataSpan);
-    outFile.write(reinterpret_cast<const char *>(byteSpan.data()), byteSpan.size_bytes());
-    return FileResult::SUCCESS;
-  } // FIXED: removed trailing semicolon
-
-  void sendBinaryData(ws_stream &ws, const uint8_t *data, size_t size) {
+  void sendBinaryData(const uint8_t *data, size_t size,ws_stream &ws) {
     std::cout << "Sending " << size << " bytes of binary data via WebSocket...\n";
-    for (size_t i = 0; i < std::min(size, size_t(5)); ++i) {
+    for (size_t i = 0; i < size; ++i) {
       std::cout << "0x" << std::hex << static_cast<int>(data[i]) << " ";
     }
     std::cout << "\n";
@@ -145,5 +118,32 @@ public:
     if (ec) {
       std::cerr << "WebSocket send failed: " << ec.message() << "\n";
     }
-  } // FIXED: removed trailing semicolon
-}; // FIXED: This closing brace successfully seals the DataProcessor class
+  } 
+  //WRITE DATA TO FILE
+  FileResult writeBinaryFile(const std::string &path, const std::vector<uint8_t> &buffer) {
+    std::ofstream outFile(path, std::ios::binary);
+    if (!outFile.is_open())
+      return FileResult::OPEN_FAILURE;
+
+    std::span<const uint8_t> dataSpan(buffer);
+    auto byteSpan = std::as_bytes(dataSpan);
+    outFile.write(reinterpret_cast<const char *>(byteSpan.data()), byteSpan.size_bytes());
+
+    return FileResult::SUCCESS;
+  } 
+
+  FileResult writeBinaryFile(const std::filesystem::path &path, const std::vector<uint8_t> &buffer) {
+    if (path.has_parent_path()) {
+      std::filesystem::create_directories(path.parent_path());
+    }
+    std::ofstream outFile(path, std::ios::binary);
+    if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
+
+    std::span<const uint8_t> dataSpan(buffer);
+    auto byteSpan = std::as_bytes(dataSpan);
+    outFile.write(reinterpret_cast<const char *>(byteSpan.data()), byteSpan.size_bytes());
+    return FileResult::SUCCESS;
+  } 
+
+
+}; 
