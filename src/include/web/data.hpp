@@ -6,9 +6,9 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <chrono>
-#include <BPY/DirectoryCrawler.hpp>
-#include <BPY/fbptree.hpp>
-#include <BPY/spanningtree.hpp>
+#include "../dir_crawler.hpp"
+#include "../FBP_Tree.hpp"
+#include "../spanningtree.hpp"
 #include <flat_map>
 #include <format>
 #include <functional>
@@ -22,3 +22,4 @@
 
 enum class OP:int{NOP = 0,TX=1,RX=2};
 std::vector<std::string> FileStrings;
+
