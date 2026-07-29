@@ -2,7 +2,8 @@
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/use_future.hpp>
-
+#include <SpanningTree/spanningtree.hpp>
+#include <DirectoryCrawler/DirectoryCrawler.hpp>
 #include <web/client.hpp>
 #include <web/server.hpp>
 

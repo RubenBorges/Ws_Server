@@ -1,0 +1,6 @@
+CompileFlags:
+  Add:
+    - -I/home/boopy/dev/Projects/contactmanager/src
+    - -I/home/boopy/dev/Projects/contactmanager/modules
+    - -std=c++23
+
