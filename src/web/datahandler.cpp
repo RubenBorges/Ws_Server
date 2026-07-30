@@ -44,7 +44,7 @@ FileResult readBinaryFile(dataTransaction &tx, std::filesystem::path _target, st
 
 FileResult writeBinaryFile(const dataTransaction &tx,std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
     if (_target.has_parent_path()) {std::filesystem::create_directories(_target.parent_path());}
-    std::ofstream outFile(_target, std::ios::binary);
+    std::ofstream outFile(_target, std::ios::binary|std::ios::ate);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
     std::println("WRITING FILE");
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
@@ -52,38 +52,24 @@ FileResult writeBinaryFile(const dataTransaction &tx,std::filesystem::path _targ
 }
 
 FileResult writeToFile(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    std::filesystem::path fullOut = _target;
-    if (fullOut.has_parent_path()) {
-        std::filesystem::create_directories(fullOut.parent_path());
-    }
-    std::ofstream outFile(fullOut, std::ios::binary);
+    if (_target.has_parent_path()) std::filesystem::create_directories(_target.parent_path());
+    std::ofstream outFile(_target, std::ios::binary|std::ios::ate);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
-
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
     return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
 FileResult sendBinaryToStdout(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    std::cout << "Streaming " << _buffer.size() << " bytes directly to standard output:\n";
-    for (size_t i = 0; i < _buffer.size(); ++i) {
-        std::cout << "0x" << std::hex << static_cast<int>(_buffer[i]) << " ";
-    }
+    std::println("Streaming {} bytes directly to standard output:", _buffer.size());
+    for (auto byte: _buffer) std::print("{:02X} ", byte);
     std::cout << "\n";
     return FileResult::SUCCESS;
 }
 
 FileResult sendBinaryToWebSocket(const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (!tx.ws->is_open()) {
-      std::println("ERROR: WebSocket Access FAILURE");
-      return FileResult::WRITE_FAILURE;
-    }
-    
-    //tx.ws.async_write(_buffer);
+    if (!tx.ws->is_open()) return FileResult::WRITE_FAILURE;
     boost::beast::error_code ec;
-    std::stringstream ss; 
-    std::string temp;
-    for (auto elem : _buffer) ss<<(char*)elem;
-    std::string my_str = std::move(ss).str(); 
+    tx.ws->write(_buffer);
     return ec ? FileResult::WRITE_FAILURE : FileResult::SUCCESS;
 }
 
@@ -91,7 +77,7 @@ FileResult readBinaryFromWebSocket(dataTransaction &tx, std::filesystem::path _t
     if (!tx.ws) return FileResult::READ_FAILED;
     boost::beast::flat_buffer dynamic_buffer;
     boost::beast::error_code ec;
-    tx.ws->read(dynamic_buffer, ec);
+    tx.ws->read(_buffer, ec);
     if (ec) return FileResult::READ_FAILED;
     size_t bytes_received = dynamic_buffer.size();
     _buffer.resize(bytes_received); 
