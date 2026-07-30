@@ -1,7 +1,5 @@
 #pragma once // Prevents recursive header inclusion bugs
 
-#pragma once
-
 #include <algorithm>
 #include <boost/random/random_device.hpp>
 #include <boost/uuid/uuid.hpp>

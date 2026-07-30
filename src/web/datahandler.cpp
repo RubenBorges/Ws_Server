@@ -16,7 +16,10 @@
 #include <format>
 #include <chrono>
 #include <print>
-using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
+
+using FileResult = data::FileResult;
+using dataTransaction = data::dataTransaction;
+using RequestVariant = std::variant<loginRequest, dataTransaction>;
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
@@ -26,158 +29,155 @@ std::vector<std::string> activeServerFilePaths;
 
 RequestVariant req;
 namespace data_ops {
-
-data::FileResult readBinaryFile(data::dataTransaction &tx) {
-    if (!std::filesystem::is_regular_file(tx.targetPath)) return data::FileResult::NOT_FOUND;
+FileResult readBinaryFile(dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+    if (!std::filesystem::is_regular_file(_target)) return FileResult::NOT_FOUND;
     
-    std::ifstream file(tx.targetPath, std::ios::binary | std::ios::ate);
-    if (!file.is_open()) return data::FileResult::OPEN_FAILURE;
+    std::ifstream file(_target, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) return FileResult::OPEN_FAILURE;
 
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    tx.memoryBuffer.reserve(size);
-    return ( file.read(reinterpret_cast<char*>(tx.memoryBuffer.data()), size))? data::FileResult::SUCCESS: data::FileResult::READ_FAILED;
+    _buffer.reserve(size);
+    std::println("READING FILE");
+    return ( file.read(reinterpret_cast<char*>(_buffer.data()), size))? FileResult::SUCCESS: FileResult::READ_FAILED;
 }
 
-data::FileResult writeBinaryFile(const data::dataTransaction &tx) {
-    if (tx.targetPath.has_parent_path()) {
-        std::filesystem::create_directories(tx.targetPath.parent_path());
-    }
-    std::ofstream outFile(tx.targetPath, std::ios::binary);
-    if (!outFile.is_open()) return data::FileResult::OPEN_FAILURE;
-
-    outFile.write(reinterpret_cast<const char*>(tx.memoryBuffer.data()), tx.memoryBuffer.size());
-    return outFile.good() ? data::FileResult::SUCCESS : data::FileResult::WRITE_FAILURE;
+FileResult writeBinaryFile(const dataTransaction &tx,std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+    if (_target.has_parent_path()) {std::filesystem::create_directories(_target.parent_path());}
+    std::ofstream outFile(_target, std::ios::binary);
+    if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
+    std::println("WRITING FILE");
+    outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
+    return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
-data::FileResult writeToFile(const data::dataTransaction &tx) {
-    std::filesystem::path fullOut = tx.outputPath / tx.targetPath.filename();
+FileResult writeToFile(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+    std::filesystem::path fullOut = _target;
     if (fullOut.has_parent_path()) {
         std::filesystem::create_directories(fullOut.parent_path());
     }
     std::ofstream outFile(fullOut, std::ios::binary);
-    if (!outFile.is_open()) return data::FileResult::OPEN_FAILURE;
+    if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
 
-    outFile.write(reinterpret_cast<const char*>(tx.memoryBuffer.data()), tx.memoryBuffer.size());
-    return outFile.good() ? data::FileResult::SUCCESS : data::FileResult::WRITE_FAILURE;
+    outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
+    return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
-data::FileResult sendBinaryToStdout(const data::dataTransaction &tx) {
-    std::cout << "Streaming " << tx.memoryBuffer.size() << " bytes directly to standard output:\n";
-    for (size_t i = 0; i < tx.memoryBuffer.size(); ++i) {
-        std::cout << "0x" << std::hex << static_cast<int>(tx.memoryBuffer[i]) << " ";
+FileResult sendBinaryToStdout(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+    std::cout << "Streaming " << _buffer.size() << " bytes directly to standard output:\n";
+    for (size_t i = 0; i < _buffer.size(); ++i) {
+        std::cout << "0x" << std::hex << static_cast<int>(_buffer[i]) << " ";
     }
     std::cout << "\n";
-    return data::FileResult::SUCCESS;
+    return FileResult::SUCCESS;
 }
 
-data::FileResult sendBinaryToWebSocket(const data::dataTransaction tx) {
+FileResult sendBinaryToWebSocket(const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
     if (!tx.ws->is_open()) {
       std::println("ERROR: WebSocket Access FAILURE");
-      return data::FileResult::WRITE_FAILURE;
+      return FileResult::WRITE_FAILURE;
     }
     
-    //tx.ws.async_write(tx.memoryBuffer);
+    //tx.ws.async_write(_buffer);
     boost::beast::error_code ec;
     std::stringstream ss; 
     std::string temp;
-    for (auto elem : tx.memoryBuffer) ss<<(char*)elem;
+    for (auto elem : _buffer) ss<<(char*)elem;
     std::string my_str = std::move(ss).str(); 
-    return ec ? data::FileResult::WRITE_FAILURE : data::FileResult::SUCCESS;
+    return ec ? FileResult::WRITE_FAILURE : FileResult::SUCCESS;
 }
 
-data::FileResult readBinaryFromWebSocket(data::dataTransaction &tx) {
-    if (!tx.ws) return data::FileResult::READ_FAILED;
+FileResult readBinaryFromWebSocket(dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+    if (!tx.ws) return FileResult::READ_FAILED;
     boost::beast::flat_buffer dynamic_buffer;
     boost::beast::error_code ec;
     tx.ws->read(dynamic_buffer, ec);
-    if (ec) return data::FileResult::READ_FAILED;
-    size_t bytes_received = dynamic_buffer.size();     // 1. Get the total number of bytes received
-    tx.memoryBuffer.resize(bytes_received);  // 2. Resize your destination vector to match the incoming data size
-    boost::asio::buffer_copy(                         // 3. Copy the fragmented/flat buffer data into your contiguous std::byte vector
-        boost::asio::buffer(tx.memoryBuffer.data(), tx.memoryBuffer.size()), 
-        dynamic_buffer.data());
-    return data::FileResult::SUCCESS;
+    if (ec) return FileResult::READ_FAILED;
+    size_t bytes_received = dynamic_buffer.size();
+    _buffer.resize(bytes_received); 
+    boost::asio::buffer_copy(boost::asio::buffer(_buffer.data(), _buffer.size()), dynamic_buffer.data());
+    return FileResult::SUCCESS;
 }
 } // namespace data_ops
 
 
-void handleDataSync(data::dataTransaction &tx) {
-
+void handleDataSync(dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer){
+using namespace data;
+using namespace data_ops;
   switch (tx.cmd) {
 
   //Receive
-    case data::OP::RX: { 
+    case OP::RX: { 
       // 1. Read the bytes coming out of the remote web socket pipeline matrix
-      tx.fileResult = data_ops::readBinaryFromWebSocket(tx);
+      tx.fileResult = readBinaryFromWebSocket(tx, _target, _buffer);
       
       // 2. If network extraction finishes cleanly, commit the downloaded buffer to local disk blocks
-      if (tx.fileResult == data::FileResult::SUCCESS) {
-        tx.fileResult = data_ops::writeBinaryFile(tx);
-        tx.status = (tx.fileResult== data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
+      if (tx.fileResult == FileResult::SUCCESS) {
+        tx.fileResult = writeBinaryFile(tx, _target, _buffer);
+        tx.status = (tx.fileResult== FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
       }else{tx.status = data::Result::FAILURE;}
       break;
   }
 
   //SEND
-  case data::OP::TX: {
-    tx.fileResult = data_ops::readBinaryFile(tx);
-    if (tx.fileResult == data::FileResult::SUCCESS) tx.fileResult = data_ops::sendBinaryToWebSocket(tx);
-    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS: data::Result::FAILURE;
+  case OP::TX: {
+    tx.fileResult = readBinaryFile(tx, _target, _buffer);
+    if (tx.fileResult == FileResult::SUCCESS) tx.fileResult = sendBinaryToWebSocket(tx, _target, _buffer);
+    tx.status = ( tx.fileResult == FileResult::SUCCESS) ? Result::SUCCESS: Result::FAILURE;
     break;
   }
 
   //NEW FILE CREATION
-  case data::OP::NEW: {
+  case OP::NEW: {
     dataLogBuilder.push_back(std::format(
-        "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated.",
-        std::chrono::system_clock::now()));
-    auto res = bpy::utility::createEmptyFile(tx.targetPath);
-    res == true? tx.fileResult=data::FileResult::SUCCESS:tx.fileResult=data::FileResult::OPEN_FAILURE;
-    tx.status = (tx.fileResult == data::FileResult::SUCCESS)? data::Result::SUCCESS : data::Result::FAILURE;
+        "T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated.",std::chrono::system_clock::now()));
+    auto res = bpy::utility::createEmptyFile(_target);
+    res == true? tx.fileResult=FileResult::SUCCESS:tx.fileResult=FileResult::OPEN_FAILURE;
+    tx.status = (tx.fileResult == FileResult::SUCCESS)? Result::SUCCESS : Result::FAILURE;
     break;
   }
 
-  case data::OP::DEL: {
+  case OP::DEL: {
     dataLogBuilder.push_back(
         std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Delete processing "
                     "initiated for target: {}",
-                    std::chrono::system_clock::now(), tx.targetPath.string()));
+                    std::chrono::system_clock::now(), _target));
 
     std::error_code ec; // Swapped to standard error code to preserve standalone
                         // compatibility boundaries
-    std::filesystem::remove_all(tx.targetPath, ec);
-    tx.status = (!ec) ? data::Result::SUCCESS : data::Result::FAILURE;
-    tx.fileResult = (tx.status == data::Result::SUCCESS)? data::FileResult::SUCCESS : data::FileResult::UNKNOWN_ERROR;
+    std::filesystem::remove_all(_target, ec);
+    tx.status = (!ec) ? Result::SUCCESS : Result::FAILURE;
+    tx.fileResult = (tx.status == Result::SUCCESS)? FileResult::SUCCESS : FileResult::UNKNOWN_ERROR;
     break;
   }
 
-  case data::OP::CP: 
-    tx.fileResult = data_ops::readBinaryFile(tx);
-    if (tx.fileResult == data::FileResult::SUCCESS) tx.fileResult = data_ops::writeBinaryFile(tx);
-    tx.status = ( tx.fileResult == data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;
+  case OP::CP: 
+    tx.fileResult = readBinaryFile(tx, _target, _buffer);
+    for (auto elem : _buffer){std::cout <<"0x" << std::hex << elem; };
+    if (tx.fileResult == FileResult::SUCCESS) tx.fileResult = data_ops::writeBinaryFile(tx, _target, _buffer);
+    tx.status = ( tx.fileResult == FileResult::SUCCESS) ? Result::SUCCESS : Result::FAILURE;
     break;
 
-  case data::OP::MV:{
-    tx.fileResult = data_ops::readBinaryFile(tx);
+  case OP::MV:{
+    tx.fileResult = readBinaryFile(tx, _target, _buffer);
     std::error_code ec;
-    if (tx.fileResult == data::FileResult::SUCCESS){
-      tx.fileResult = data_ops::writeBinaryFile(tx);
-      std::filesystem::remove_all(tx.targetPath, ec);}
+    if (tx.fileResult == FileResult::SUCCESS){
+      tx.fileResult = data_ops::writeBinaryFile(tx, _target, _buffer);
+      std::filesystem::remove_all(_target, ec);}
     else{
-    tx.status = (!ec && tx.fileResult==data::FileResult::SUCCESS) ? data::Result::SUCCESS : data::Result::FAILURE;}
+    tx.status = (!ec && tx.fileResult==FileResult::SUCCESS) ? Result::SUCCESS : Result::FAILURE;}
     break;}
 
-  case data::OP::NOP: 
+  case OP::NOP: 
     std::println("No OP Selected. Ignoring Transaction Request");
-    tx.fileResult = data::FileResult::SUCCESS;
-    tx.status = data::Result::SUCCESS;
+    tx.fileResult = FileResult::SUCCESS;
+    tx.status = Result::SUCCESS;
     break;
 
   default:
     std::println("Unknown Transaction Failure");
-    tx.fileResult = data::FileResult::UNKNOWN_ERROR;
-    tx.status = data::Result::FAILURE;
+    tx.fileResult = FileResult::UNKNOWN_ERROR;
+    tx.status = Result::FAILURE;
     break;
   }
 }

@@ -31,16 +31,16 @@ int main() {
     RequestVariant loginPayload = myLogin; 
     p2p::web::ClientOptions clientOptions {"127.0.0.1",4557};
     data::WebSocket WebSock {clientOptions};
-    WebSock.connect();
-    p2p::web::AsyncEchoClient aClient(WebSock.IO());   
-    p2p::web::ServerOptions serverOptions{clientOptions.port};
-    p2p::web::AsyncEchoServer aServer(WebSock.IO(),serverOptions);
+    // WebSock.connect();
+    // p2p::web::AsyncEchoClient aClient(WebSock.IO());   
+    // p2p::web::ServerOptions serverOptions{clientOptions.port};
+    // p2p::web::AsyncEchoServer aServer(WebSock.IO(),serverOptions);
     
     // ---- Test Path 2: Execute a Data Transfer Flow ----
     using namespace data;
     
     dispatch("login",loginPayload,WebSock.ws);
-    data::dataTransaction ThisDataTransaction("/home/boopy/Pictures/boop.jpg", 1024,"home/boopy/dev/Projects/ws_server/out",&WebSock.ws,OP::CP);
+    data::dataTransaction ThisDataTransaction("/home/boopy/Pictures/boop.jpg", 1024,"/home/boopy/dev/Projects/ws_server/out.jpg",&WebSock.ws,OP::CP);
     RequestVariant reqVariant(ThisDataTransaction);
     dispatch("data",reqVariant,*ThisDataTransaction.ws); 
     return 0;

@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/boopy/dev/Projects/ws_server/build/cmake_install.cmake",
-		"/home/boopy/dev/Projects/ws_server/build/src/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

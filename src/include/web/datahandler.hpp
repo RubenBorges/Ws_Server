@@ -60,20 +60,16 @@ public:
     error_code ec;
 };
 
+struct DataProcessor{
+    std::filesystem::path target;
+    std::vector<uint8_t> buffer;
+};
+
 struct dataTransaction {
   OP cmd;
   Result status{Result::PENDING};
   FileResult fileResult{FileResult::PENDING};
-  std::filesystem::path targetPath;
-  std::vector<std::string> filepaths; 
-  std::filesystem::path outputPath{"/home/boopy"};
-  std::vector<std::byte> memoryBuffer; 
-  ws_stream* ws;  
-  // Pass by value and std::move it into the member variable
-  dataTransaction(std::string _targetPath, int reserveSize, std::string _outputPath, ws_stream* _ws, OP operation = OP::NOP)
-  : targetPath(_targetPath), outputPath(_outputPath), ws(_ws){
-    cmd=operation; filepaths.reserve(reserveSize); memoryBuffer.reserve(reserveSize);
-  }};
+  ws_stream* ws;};
 } // namespace data
 
 // Share state instances across different source files safely via extern declarations
@@ -82,12 +78,13 @@ extern std::vector<std::string> activeServerFilePaths;
 extern data::dataTransaction ThisDataTransaction;
 
 namespace data_ops {
-data::FileResult readBinaryFile(data::dataTransaction &tx);
-data::FileResult writeBinaryFile(const data::dataTransaction &tx);
-data::FileResult writeToFile(const data::dataTransaction &tx);
-data::FileResult sendBinaryToStdout(const data::dataTransaction &tx);
-data::FileResult sendBinaryToWebSocket(const data::dataTransaction tx);
-data::FileResult readBinaryFromWebSocket(data::dataTransaction &tx); // Removed const so we can safely mutate memoryBuffer
+using namespace data;
+FileResult readBinaryFile           (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult writeBinaryFile          (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult writeToFile              (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToStdout       (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 } // namespace data_ops
-void handleDataSync(data::dataTransaction &tx);
+void handleDataSync(const data::dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 //void handleDataSync(data::dataTransaction &tx, ::ws_stream& ws);

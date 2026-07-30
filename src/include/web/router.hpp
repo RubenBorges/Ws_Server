@@ -15,9 +15,10 @@ using ws_stream = boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
 void handleLogin(loginRequest &req);
-void handleDataRequest(data::dataTransaction *request) ;
+void handleDataRequest(data::dataTransaction *request, std::filesystem::path _target, std::vector<uint8_t>& _buffer) ;
 //void handleDataRequest(data::dataTransaction *request) ;
 //extern const std::unordered_map<std::string, std::function<void(RequestVariant&, ws_stream&)>> functionTable;
-extern const std::unordered_map<std::string, std::function<void(RequestVariant*, ws_stream&)>> functionTable;
+//extern const std::unordered_map<std::string, std::function<void(RequestVariant*, ws_stream&)>> functionTable;
+//extern const std::unordered_map<std::string, std::function<void(RequestVariant*, std::filesystem::path _target, std::vector<uint8_t>& _buffer)>> functionTable;
 
-void dispatch(const std::string &cmd, RequestVariant& req, ws_stream& ws);
+void dispatch(const std::string &cmd, RequestVariant &req, std::filesystem::path& _target, std::vector<uint8_t>& _buffer);
