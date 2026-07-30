@@ -87,4 +87,3 @@ FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::filesystem:
 FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 } // namespace data_ops
 void handleDataSync(const data::dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-//void handleDataSync(data::dataTransaction &tx, ::ws_stream& ws);
