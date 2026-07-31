@@ -9,6 +9,7 @@
 #include <boost/asio/streambuf.hpp>
 #include <filesystem>
 #include <string>
+#include <system_error>
 #include <web/datahandler.hpp>
 #include <web/router.hpp>
 #include <fstream>
@@ -25,9 +26,6 @@ using RequestVariant = std::variant<loginRequest, dataTransaction>;
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
-// Allocate your global variable storage targets exactly once here in memory
-std::vector<std::string> dataLogBuilder;
-std::vector<std::string> activeServerFilePaths;
 
 RequestVariant req;
 namespace data_ops {
@@ -68,9 +66,12 @@ FileResult writeToFile(const dataTransaction &tx, const std::filesystem::path* _
 }
 
 FileResult moveFile(const dataTransaction &tx, const std::filesystem::path* _targets, std::vector<uint8_t>& _buffer){
-auto res = readBinaryFile(tx, _targets,_buffer);
-std::filesystem::path to = *(_targets+1);
-return FileResult::SUCCESS;
+  auto res = readBinaryFile(tx, _targets,_buffer);
+  if (res == FileResult::SUCCESS){
+    res = writeBinaryFile(tx, _targets+1, _buffer);
+    std::filesystem::remove_all(*_targets);
+  }
+  return res;
 }
 
 FileResult appendFile(const dataTransaction &tx,const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
@@ -119,6 +120,7 @@ std::error_code ec;
   switch (tx.cmd) {
   //Receive
     case OP::RX: { 
+      dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Receiving file transfer initiated for target: {}",std::chrono::system_clock::now(), *_target));
       tx.fileResult = readBinaryFromWebSocket(tx,  _buffer);
       if (tx.fileResult == FileResult::SUCCESS) {
         tx.fileResult = writeBinaryFile(tx, _target, _buffer);
@@ -129,6 +131,7 @@ std::error_code ec;
 
   //SEND
   case OP::TX: 
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Transfer initiated for target: {}",std::chrono::system_clock::now(), *_target));
     tx.fileResult = readBinaryFile(tx, _target, _buffer);
     if (tx.fileResult == FileResult::SUCCESS) tx.fileResult = sendBinaryToWebSocket(tx, _buffer);
     tx.status = ( tx.fileResult == FileResult::SUCCESS) ? Result::SUCCESS: Result::FAILURE;
@@ -136,7 +139,7 @@ std::error_code ec;
 
   //NEW FILE CREATION
   case OP::NEW: {
-    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated {}",std::chrono::system_clock::now(),*_target));
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:New File Creation processing initiated {}",std::chrono::system_clock::now(),*_target));
     tx.fileResult= (bpy::utility::createEmptyFile(*_target))? FileResult::SUCCESS : FileResult::OPEN_FAILURE;
     tx.status = (tx.fileResult == FileResult::SUCCESS)? Result::SUCCESS : Result::FAILURE;
     break;
@@ -150,6 +153,7 @@ std::error_code ec;
     break;
 
   case OP::CP: 
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Copying initiated for target: {}",std::chrono::system_clock::now(), *_target));
     tx.fileResult = readBinaryFile(tx, _target, _buffer);
     for (auto elem : _buffer){std::cout <<"0x" << std::hex << elem; };
     if (tx.fileResult == FileResult::SUCCESS) tx.fileResult = data_ops::writeBinaryFile(tx, _target, _buffer);
@@ -157,19 +161,18 @@ std::error_code ec;
     break;
 
   case OP::MV:
-    tx.fileResult = readBinaryFile(tx, _target, _buffer);
-    if (tx.fileResult == FileResult::SUCCESS){
-      tx.fileResult = data_ops::writeBinaryFile(tx, _target, _buffer);
-      std::filesystem::remove_all(*_target, ec);}
-    else{tx.status = (!ec && tx.fileResult==FileResult::SUCCESS) ? Result::SUCCESS : Result::FAILURE;}
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Move initiated for target: {}",std::chrono::system_clock::now(), *_target));
+    tx.fileResult = moveFile(tx, _target, _buffer);
+    tx.status = (tx.fileResult==FileResult::SUCCESS) ? Result::SUCCESS : Result::FAILURE;
     break;
   
   case OP::AP:
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Appending to target: {}",std::chrono::system_clock::now(), *_target));
     tx.fileResult = appendFile(tx, _target, _buffer);
     break;
     
   case OP::NOP: 
-    std::println("No OP Selected. Ignoring Transaction Request");
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:No OP Selected. Ignoring Transaction Request",std::chrono::system_clock::now()));
     tx.fileResult = FileResult::SUCCESS;
     tx.status = Result::SUCCESS;
     break;

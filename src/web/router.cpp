@@ -8,12 +8,48 @@
 #include <print>      
 #include <unordered_map> 
 
+void handleLogin(loginRequest &req) {    
+    login(req);
+    logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- {}",std::chrono::system_clock::now(), (req.status==LogResult::SUCCESS)? "NOTIFY:Login Request Handler Success": "ERROR:Login Request Handler Failed"));
+}
 
-extern std::vector<std::string> dataLogBuilder;
-extern std::vector<std::string> activeServerFilePaths;
-extern data::dataTransaction ThisDataTransaction;
+void handleDataRequest(data::dataTransaction& request,const  std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    handleDataSync(request,_target,_buffer); 
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- {}",std::chrono::system_clock::now(), (request.status==data::Result::SUCCESS)? "NOTIFY:DataRequest Handler Success": "ERROR:DataRequest Handler Failed"));
+}
 
+using LoginFuncPtr = void(*)(loginRequest&);
+using DataFuncPtr  = void(*)(data::dataTransaction&, const std::filesystem::path*, std::vector<uint8_t>&);
+using FastFuncVariant = std::variant<LoginFuncPtr, DataFuncPtr>;
 
+void dispatch(const std::string &cmd, RequestVariant &req, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    static const std::unordered_map<std::string, FastFuncVariant> function_table {
+        { "login", LoginFuncPtr([](loginRequest& login_req) { handleLogin(login_req);})},
+        { "data",  DataFuncPtr([](data::dataTransaction& request,const std::filesystem::path* target_path, std::vector<uint8_t>& buffer) { 
+                       handleDataRequest(request, target_path, buffer);})}
+    };
+
+    auto it = function_table.find(cmd);
+    if (it == function_table.end()) {
+        std::println(std::cerr, "Command: '{}' not supported.", cmd);
+        return;
+    }
+    if (cmd == "login") {
+        if (auto* login_req = std::get_if<loginRequest>(&req)) {
+            auto func = std::get<LoginFuncPtr>(it->second);
+            logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Notify:Dispatching Login Handler For {}",std::chrono::system_clock::now(),login_req->logCredentials.username));
+            func(*login_req); }
+        else{logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Error: Payload is not a loginRequest.",std::chrono::system_clock::now()));}
+    } 
+    else if (cmd == "data") {
+        if (auto* data_req = std::get_if<data::dataTransaction>(&req)) {
+            auto func = std::get<DataFuncPtr>(it->second);
+            dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Notify:Dispatching DataRequest Handler",std::chrono::system_clock::now()));
+            func(*data_req, _target, _buffer);} 
+        else{dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Error: Payload is not a DataRequest.",std::chrono::system_clock::now()));}
+    }
+}
+/*
 namespace router{
 // The pattern definition
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
@@ -33,42 +69,4 @@ int visit() {
     return 0;
 }
 }//namespace router
-
-void handleLogin(loginRequest &req) {
-    login(req);
-}
-
-void handleDataRequest(data::dataTransaction& request,const  std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
-    handleDataSync(request,_target,_buffer); 
-}
-
-using LoginFuncPtr = void(*)(loginRequest&);
-using DataFuncPtr  = void(*)(data::dataTransaction&, const std::filesystem::path*, std::vector<uint8_t>&);
-using FastFuncVariant = std::variant<LoginFuncPtr, DataFuncPtr>;
-
-void dispatch(const std::string &cmd, RequestVariant &req, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
-    static const std::unordered_map<std::string, FastFuncVariant> function_table {
-        { "login", LoginFuncPtr([](loginRequest& login_req) { handleLogin(login_req);})},
-        { "data",  DataFuncPtr([](data::dataTransaction& request,const std::filesystem::path* target_path, std::vector<uint8_t>& buffer) { 
-                       handleDataRequest(request, target_path, buffer);})}
-    };
-
-    auto it = function_table.find(cmd);
-    if (it == function_table.end()) {
-        std::println(std::cerr, "Command: '{}' not supported.", cmd);
-        return;
-    }
-
-    if (cmd == "login") {
-        if (auto* login_req = std::get_if<loginRequest>(&req)) {
-            auto func = std::get<LoginFuncPtr>(it->second);
-            func(*login_req); }
-        else{std::println(std::cerr, "Error: Payload is not a loginRequest.");}
-    } 
-    else if (cmd == "data") {
-        if (auto* data_req = std::get_if<data::dataTransaction>(&req)) {
-            auto func = std::get<DataFuncPtr>(it->second);
-            func(*data_req, _target, _buffer);} 
-        else {std::println(std::cerr, "Error: Payload is not a dataTransaction.");}
-    }
-}
+*/

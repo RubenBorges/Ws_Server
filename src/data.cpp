@@ -7,6 +7,8 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <cstdint>
+#include <memory>
 #include <web/client.hpp>
 #include <web/server.hpp>
 #include <boost/beast/core.hpp>
@@ -27,21 +29,29 @@ using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
 int main() {
+    std::vector<std::string> dataLogBuilder; 
+    std::vector<std::string> logBuilder;
+    std::vector<std::vector<std::string>*> Loglist;
+    Loglist.push_back(&logBuilder);
+    Loglist.push_back(&dataLogBuilder);
+
+
     loginRequest myLogin{LogCmd::LOGIN, loginCredentials{"Admin", "PASSWD"},uuid_T{}};
-    RequestVariant loginPayload = myLogin; 
     p2p::web::ClientOptions clientOptions {"127.0.0.1",4557};
     data::WebSocket WebSock {clientOptions};
     // WebSock.connect();
-    // p2p::web::AsyncEchoClient aClient(WebSock.IO());   
-    // p2p::web::ServerOptions serverOptions{clientOptions.port};
-    // p2p::web::AsyncEchoServer aServer(WebSock.IO(),serverOptions);
+     p2p::web::AsyncEchoClient aClient(WebSock.IO());   
+     p2p::web::ServerOptions serverOptions{clientOptions.port};
+     p2p::web::AsyncEchoServer aServer(WebSock.IO(),serverOptions);
     
     // ---- Test Path 2: Execute a Data Transfer Flow ----
     using namespace data;
     
-    dispatch("login",loginPayload,WebSock.ws);
-    data::dataTransaction ThisDataTransaction("/home/boopy/Pictures/boop.jpg", 1024,"/home/boopy/dev/Projects/ws_server/out.jpg",&WebSock.ws,OP::CP);
-    RequestVariant reqVariant(ThisDataTransaction);
-    dispatch("data",reqVariant,*ThisDataTransaction.ws); 
+    DataProcessor procesor {"Target"};
+    RequestVariant loginPayload = myLogin; 
+    dispatch("login",loginPayload,procesor.target,procesor.buffer);
+    data::dataTransaction dataReq{data::OP::CP, WebSock.ws};
+    RequestVariant dataPayload = dataReq;
+    dispatch("data",dataPayload, procesor.target,procesor.buffer); 
     return 0;
 }

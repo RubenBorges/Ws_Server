@@ -65,7 +65,6 @@ bool validateLogin(const Account &acc, const loginCredentials &logInput) {
 // Define and initialize table states safely in exactly one compiled object
 std::vector<sessionToken_t> activeSession;
 std::vector<uuid_T> uuidTable = {account::generate_any_uuid(), account::generate_any_uuid()};
-std::vector<std::string> logBuilder;
 
 std::unordered_map<uuid_T, Account> accountTable{
   {uuidTable[0], Account{loginCredentials{"Admin", "PASSWD"}, uuidTable[0]}}

@@ -48,6 +48,17 @@ public:
         if (ec) {std::cerr << "Handshake failed: " << ec.message() << "\n";return;}
     }
     boost::asio::io_context& IO(){return io;}
+
+    ws_stream& WS(){return ws;}
+    ws_stream& WsRef() {return this->ws;}
+    template<typename T> void write(T writeData){ws.write(writeData);};
+
+    template<typename T> void asyncWrite(T writeData){ws.async_write(writeData);};
+
+    template<typename T> void read(T readData){ws.read(readData);};
+
+    template<typename T> void asyncReac(T readData){ws.async_read(readData);};
+
 // Variables are intentionally ordered by structural dependency constraints
 private:
     boost::asio::io_context io;     // Context MUST be declared first
@@ -66,15 +77,14 @@ struct DataProcessor{
 
 struct dataTransaction {
   OP cmd;
-  Result status{Result::PENDING};
+  ws_stream& ws;
   FileResult fileResult{FileResult::PENDING};
-  ws_stream* ws;};
+  Result status{Result::PENDING};
+  };
 } // namespace data
 
 // Share state instances across different source files safely via extern declarations
 extern std::vector<std::string> dataLogBuilder;
-extern std::vector<std::string> activeServerFilePaths;
-extern data::dataTransaction ThisDataTransaction;
 
 namespace data_ops {
 using namespace data;
