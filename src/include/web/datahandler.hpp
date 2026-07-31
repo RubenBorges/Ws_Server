@@ -17,7 +17,7 @@ using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
 namespace data {
-enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, CP = 8, MV = 16, DEL = 32 };
+enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, CP = 8, MV = 16, DEL = 32, AP = 64};
 enum class Result : int { SUCCESS = 0, FAILURE = 1, PENDING = 2 };
 enum class FileResult : int {
   SUCCESS = 0,
@@ -81,9 +81,11 @@ namespace data_ops {
 using namespace data;
 FileResult readBinaryFile           (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 FileResult writeBinaryFile          (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult appendBinaryFile         (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 FileResult writeToFile              (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult appendFile               (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
 FileResult sendBinaryToStdout       (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
 } // namespace data_ops
 void handleDataSync(const data::dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
