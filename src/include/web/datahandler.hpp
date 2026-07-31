@@ -5,7 +5,8 @@
 #include <boost/beast.hpp>
 #include <boost/beast/websocket/stream.hpp>
 #include <cstdint>
-#include<web/client.hpp>
+#include <web/client.hpp>
+#include <web/log.hpp>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -75,7 +76,7 @@ public:
 
 struct DataProcessor{
     std::filesystem::path target;
-    std::vector<uint8_t> buffer;
+    std::vector<uint8_t> buffer{0};
 };
 
 struct dataTransaction {
@@ -86,19 +87,17 @@ struct dataTransaction {
   };
 } // namespace data
 
-// Share state instances across different source files safely via extern declarations
-extern std::vector<std::string> dataLogBuilder;
 
 namespace data_ops {
 using namespace data;
-FileResult readBinaryFile           (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult writeBinaryFile          (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult appendBinaryFile         (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult writeToFile              (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult appendFile               (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToStdout       (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult moveFile                 (const dataTransaction &tx, const std::filesystem::path*_targetS, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
-FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFile           (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult writeBinaryFile          (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult appendBinaryFile         (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult writeToFile              (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult appendFile               (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult moveFile                 (dataTransaction &tx, const std::filesystem::path*_targetS, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToStdout       (dataTransaction& tx, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToWebSocket    (dataTransaction& tx, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFromWebSocket  (dataTransaction& tx, std::vector<uint8_t>& _buffer);
 } // namespace data_ops
-void handleDataSync(const data::dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+void handleDataSync(data::dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);

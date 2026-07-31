@@ -1,4 +1,5 @@
 #include <web/loginhandler.hpp>
+#include <web/log.hpp>
 #include <print>
 #include <cctype>
 

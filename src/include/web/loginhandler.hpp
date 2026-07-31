@@ -70,7 +70,6 @@ bool validateLogin(const Account &acc, const loginCredentials &logInput);
 // Declare shared global state tables
 extern std::vector<sessionToken_t> activeSession;
 extern std::vector<uuid_T> uuidTable;
-extern std::vector<std::string> logBuilder;
 extern std::unordered_map<uuid_T, Account> accountTable;
 extern std::flat_map<std::string, uuid_T> nameToUUID;
 extern std::unordered_map<uuid_T, Account> tombstonedAccountsTable;

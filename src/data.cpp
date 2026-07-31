@@ -21,6 +21,7 @@
 #include <web/datahandler.hpp>
 #include <web/loginhandler.hpp>
 #include <web/router.hpp>
+#include <web/log.hpp>
 
 // Custom definitions mapping network socket namespaces cleanly
 namespace asio = boost::asio;
@@ -29,8 +30,8 @@ using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
 int main() {
-    std::vector<std::string> dataLogBuilder; 
-    std::vector<std::string> logBuilder;
+    std::vector<std::string> dataLogBuilder(100); 
+    std::vector<std::string> logBuilder(100);
     std::vector<std::vector<std::string>*> Loglist;
     Loglist.push_back(&logBuilder);
     Loglist.push_back(&dataLogBuilder);
@@ -49,9 +50,9 @@ int main() {
     
     DataProcessor procesor {"Target"};
     RequestVariant loginPayload = myLogin; 
-    dispatch("login",loginPayload,procesor.target,procesor.buffer);
-    data::dataTransaction dataReq{data::OP::CP, WebSock.ws};
+   // dispatch("login",loginPayload,procesor.target,procesor.buffer);
+    dataTransaction dataReq{OP::CP, WebSock.ws};
     RequestVariant dataPayload = dataReq;
-    dispatch("data",dataPayload, procesor.target,procesor.buffer); 
+   // dispatch("data",dataPayload, procesor.target,procesor.buffer); 
     return 0;
 }
