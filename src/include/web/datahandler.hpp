@@ -77,6 +77,7 @@ public:
 struct DataProcessor{
     std::filesystem::path target;
     std::vector<uint8_t> buffer{0};
+    std::filesystem::path dest{""};
 };
 
 struct dataTransaction {
@@ -90,14 +91,14 @@ struct dataTransaction {
 
 namespace data_ops {
 using namespace data;
-FileResult readBinaryFile           (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult writeBinaryFile          (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult appendBinaryFile         (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult writeToFile              (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult appendFile               (dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
-FileResult moveFile                 (dataTransaction &tx, const std::filesystem::path*_targetS, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToStdout       (dataTransaction& tx, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToWebSocket    (dataTransaction& tx, std::vector<uint8_t>& _buffer);
-FileResult readBinaryFromWebSocket  (dataTransaction& tx, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFile           (dataTransaction& tx, DataProcessor& data);
+FileResult writeBinaryFile          (dataTransaction& tx, DataProcessor& data);
+FileResult appendBinaryFile         (dataTransaction& tx, DataProcessor& data);
+FileResult writeToFile              (dataTransaction& tx, DataProcessor& data);
+FileResult appendFile               (dataTransaction& tx, DataProcessor& data);
+FileResult moveFile                 (dataTransaction& tx, DataProcessor& data);
+FileResult sendBinaryToStdout       (dataTransaction& tx, DataProcessor& data);
+FileResult sendBinaryToWebSocket    (dataTransaction& tx, DataProcessor& data);
+FileResult readBinaryFromWebSocket  (dataTransaction& tx, DataProcessor& data);
 } // namespace data_ops
-void handleDataSync(data::dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+void handleDataSync(data::dataTransaction &tx,data::DataProcessor& data);

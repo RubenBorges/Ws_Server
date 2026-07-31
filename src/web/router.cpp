@@ -1,10 +1,10 @@
 #include <BPY/util.hpp>
+#include <optional>
 #include <web/datahandler.hpp>
 #include <web/loginhandler.hpp>
 #include <web/router.hpp>
 #include <web/log.hpp>
 #include <sys/types.h>
-#include <cstdint>
 #include <iostream>    
 #include <print>      
 #include <unordered_map> 
@@ -14,20 +14,20 @@ void handleLogin(loginRequest &req) {
     logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- {}",std::chrono::system_clock::now(), (req.status==LogResult::SUCCESS)? "NOTIFY:Login Request Handler Success": "ERROR:Login Request Handler Failed"));
 }
 
-void handleDataRequest(data::dataTransaction& request,const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
-    handleDataSync(request,_target,_buffer); 
+void handleDataRequest(data::dataTransaction& request, data::DataProcessor& data) {
+    handleDataSync(request, data); 
     dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- {}",std::chrono::system_clock::now(), (request.status==data::Result::SUCCESS)? "NOTIFY:DataRequest Handler Success": "ERROR:DataRequest Handler Failed"));
 }
 
 using LoginFuncPtr = void(*)(loginRequest&);
-using DataFuncPtr  = void(*)(data::dataTransaction&, const std::filesystem::path*, std::vector<uint8_t>&);
+using DataFuncPtr  = void(*)(data::dataTransaction&,data::DataProcessor&);
 using FastFuncVariant = std::variant<LoginFuncPtr, DataFuncPtr>;
 
-void dispatch(const std::string& cmd, RequestVariant &req, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+void dispatch(const std::string& cmd, RequestVariant &req, data::DataProcessor& data) {
     static const std::unordered_map<std::string, FastFuncVariant> function_table {
         { "login", LoginFuncPtr([](loginRequest& login_req) { handleLogin(login_req);})},
-        { "data",  DataFuncPtr([](data::dataTransaction& request,const std::filesystem::path* target_path, std::vector<uint8_t>& buffer) { 
-                       handleDataRequest(request, target_path, buffer);})}
+        { "data",  DataFuncPtr([](data::dataTransaction& request, data::DataProcessor& dat) { 
+                       handleDataRequest(request, dat);})}
     };
 
     auto it = function_table.find(cmd);
@@ -46,10 +46,11 @@ void dispatch(const std::string& cmd, RequestVariant &req, const std::filesystem
         if (auto data_req = std::get_if<data::dataTransaction>(&req)) {
             auto func = std::get<DataFuncPtr>(it->second);
             dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Notify:Dispatching DataRequest Handler",std::chrono::system_clock::now()));
-            func(*data_req, _target, _buffer);} 
+            func(*data_req, data);} 
         else{dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- Error: Payload is not a DataRequest.",std::chrono::system_clock::now()));}
     }
 }
+
 /*
 namespace router{
 // The pattern definition
