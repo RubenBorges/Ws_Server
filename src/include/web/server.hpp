@@ -3,7 +3,7 @@
 #include <atomic>
 #include <memory>
 #include <string>
-
+#include <web/router.hpp>
 namespace p2p::web {
 
 namespace asio = boost::asio;
@@ -25,7 +25,6 @@ public:
 private:
 	asio::awaitable<void> accept_loop();
 	asio::awaitable<void> session_loop(tcp::socket socket);
-
 	asio::io_context& io_;
 	tcp::acceptor acceptor_;
 	ServerOptions options_;

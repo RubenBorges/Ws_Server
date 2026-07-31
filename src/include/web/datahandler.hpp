@@ -14,6 +14,9 @@
 namespace asio = ::boost::asio;
 using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
+using tcp = boost::asio::ip::tcp;
+namespace websocket = boost::beast::websocket;
+using WebSocketStreamPtr = std::shared_ptr<websocket::stream<tcp::socket>>;
 
 namespace data {
 enum class OP : int { NOP = 0, TX = 1, RX = 2, NEW = 4, CP = 8, MV = 16, DEL = 32, AP = 64};
@@ -53,11 +56,11 @@ public:
     ws_stream& WsRef() {return this->ws;}
     template<typename T> void write(T writeData){ws.write(writeData);};
 
-    template<typename T> void asyncWrite(T writeData){ws.async_write(writeData);};
+    template<typename T> void asyncWrite(T writeData){ws.async_write(boost::asio::buffer(writeData));};
 
-    template<typename T> void read(T readData){ws.read(readData);};
+    template<typename T> void read(T readData){ws.read(boost::asio::buffer(readData));};
 
-    template<typename T> void asyncReac(T readData){ws.async_read(readData);};
+    template<typename T> void asyncReac(T readData){ws.async_read(boost::asio::buffer(readData));};
 
 // Variables are intentionally ordered by structural dependency constraints
 private:

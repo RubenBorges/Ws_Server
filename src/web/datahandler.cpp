@@ -8,7 +8,6 @@
 #include <boost/beast/core/stream_traits.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <filesystem>
-#include <string>
 #include <system_error>
 #include <web/datahandler.hpp>
 #include <web/router.hpp>
@@ -90,19 +89,19 @@ FileResult sendBinaryToStdout(const dataTransaction &tx, std::vector<uint8_t>& _
 }
 
 FileResult sendBinaryToWebSocket(const dataTransaction& tx, std::vector<uint8_t>& _buffer) {
-    if (!tx.ws->is_open()) return FileResult::WRITE_FAILURE;
+    if (!tx.ws.is_open()) return FileResult::WRITE_FAILURE;
     boost::beast::error_code ec;
-    tx.ws->binary(true);
-    tx.ws->write(_buffer,ec);
+    tx.ws.binary(true);
+    tx.ws.write(_buffer,ec);
     return ec ? FileResult::WRITE_FAILURE : FileResult::SUCCESS;
 }
 
 FileResult readBinaryFromWebSocket(dataTransaction &tx, std::vector<uint8_t>& _buffer) {
-    if (!tx.ws) return FileResult::READ_FAILED;
+    if (!tx.ws.is_open()) return FileResult::READ_FAILED;
     boost::beast::flat_buffer dynamic_buffer;
     boost::beast::error_code ec;
-    tx.ws->binary(true);
-    tx.ws->read(_buffer, ec);
+    tx.ws.binary(true);
+    tx.ws.read(_buffer, ec);
     if (ec) return FileResult::READ_FAILED;
     size_t bytes_received = dynamic_buffer.size();
     _buffer.resize(bytes_received); 
