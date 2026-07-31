@@ -17,6 +17,7 @@
 #include <format>
 #include <chrono>
 #include <print>
+#include <cstddef>
 
 using FileResult = data::FileResult;
 using dataTransaction = data::dataTransaction;
