@@ -38,18 +38,18 @@ void handleLogin(loginRequest &req) {
     login(req);
 }
 
-void handleDataRequest(data::dataTransaction& request, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+void handleDataRequest(data::dataTransaction& request,const  std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
     handleDataSync(request,_target,_buffer); 
 }
 
 using LoginFuncPtr = void(*)(loginRequest&);
-using DataFuncPtr  = void(*)(data::dataTransaction&, std::filesystem::path, std::vector<uint8_t>&);
+using DataFuncPtr  = void(*)(data::dataTransaction&, const std::filesystem::path*, std::vector<uint8_t>&);
 using FastFuncVariant = std::variant<LoginFuncPtr, DataFuncPtr>;
 
-void dispatch(const std::string &cmd, RequestVariant &req, std::filesystem::path& _target, std::vector<uint8_t>& _buffer) {
+void dispatch(const std::string &cmd, RequestVariant &req, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
     static const std::unordered_map<std::string, FastFuncVariant> function_table {
-        { "login", LoginFuncPtr([](loginRequest& login_req) { handleLogin(login_req); }) },
-        { "data",  DataFuncPtr([](data::dataTransaction& request, std::filesystem::path target_path, std::vector<uint8_t>& buffer) { 
+        { "login", LoginFuncPtr([](loginRequest& login_req) { handleLogin(login_req);})},
+        { "data",  DataFuncPtr([](data::dataTransaction& request,const std::filesystem::path* target_path, std::vector<uint8_t>& buffer) { 
                        handleDataRequest(request, target_path, buffer);})}
     };
 

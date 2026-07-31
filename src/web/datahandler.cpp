@@ -7,6 +7,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core/stream_traits.hpp>
 #include <boost/asio/streambuf.hpp>
+#include <filesystem>
 #include <string>
 #include <web/datahandler.hpp>
 #include <web/router.hpp>
@@ -29,9 +30,9 @@ std::vector<std::string> activeServerFilePaths;
 
 RequestVariant req;
 namespace data_ops {
-FileResult readBinaryFile(dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (!std::filesystem::is_regular_file(_target)) return FileResult::NOT_FOUND;
-    std::ifstream file(_target, std::ios::in|std::ios::binary);
+FileResult readBinaryFile(dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    if (!std::filesystem::is_regular_file(*_target)) return FileResult::NOT_FOUND;
+    std::ifstream file(*_target, std::ios::in|std::ios::binary);
     if (!file.is_open()) return FileResult::OPEN_FAILURE;
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
@@ -40,40 +41,46 @@ FileResult readBinaryFile(dataTransaction &tx, std::filesystem::path _target, st
     return ( file.read(reinterpret_cast<char*>(_buffer.data()), size))? FileResult::SUCCESS: FileResult::READ_FAILED;
 }
 
-FileResult writeBinaryFile(const dataTransaction &tx,std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (_target.has_parent_path()) {std::filesystem::create_directories(_target.parent_path());}
-    std::ofstream outFile(_target, std::ios::out|std::ios::binary);
+FileResult writeBinaryFile(const dataTransaction &tx,const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    if (_target->has_parent_path()) {std::filesystem::create_directories(_target->parent_path());}
+    std::ofstream outFile(*_target, std::ios::out|std::ios::binary);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
     std::println("WRITING FILE");
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
     return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
-FileResult appendBinaryFile(const dataTransaction &tx,std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (_target.has_parent_path()) {std::filesystem::create_directories(_target.parent_path());}
-    std::ofstream outFile(_target, std::ios::out|std::ios::binary|std::ios::app);
+FileResult appendBinaryFile(const dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    if (_target->has_parent_path()) {std::filesystem::create_directories(_target->parent_path());}
+    std::ofstream outFile(*_target, std::ios::out|std::ios::binary|std::ios::app);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
     std::println("WRITING FILE");
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
     return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
-FileResult writeToFile(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (_target.has_parent_path()) std::filesystem::create_directories(_target.parent_path());
-    std::ofstream outFile(_target, std::ios::out);
+FileResult writeToFile(const dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    if (_target->has_parent_path()) std::filesystem::create_directories(_target->parent_path());
+    std::ofstream outFile(*_target, std::ios::out);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
     return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
-FileResult appendFile(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
-    if (_target.has_parent_path()) std::filesystem::create_directories(_target.parent_path());
-    std::ofstream outFile(_target, std::ios::out|std::ios::app);
+FileResult moveFile(const dataTransaction &tx, const std::filesystem::path* _targets, std::vector<uint8_t>& _buffer){
+auto res = readBinaryFile(tx, _targets,_buffer);
+std::filesystem::path to = *(_targets+1);
+return FileResult::SUCCESS;
+}
+
+FileResult appendFile(const dataTransaction &tx,const std::filesystem::path* _target, std::vector<uint8_t>& _buffer) {
+    if (_target->has_parent_path()) std::filesystem::create_directories(_target->parent_path());
+    std::ofstream outFile(*_target, std::ios::out|std::ios::app);
     if (!outFile.is_open()) return FileResult::OPEN_FAILURE;
     outFile.write(reinterpret_cast<const char*>(_buffer.data()), _buffer.size());
     return outFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
-FileResult sendBinaryToStdout(const dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer) {
+FileResult sendBinaryToStdout(const dataTransaction &tx, std::vector<uint8_t>& _buffer) {
     std::println("Streaming {} bytes directly to standard output:", _buffer.size());
     for (auto byte: _buffer) std::print("{:02X} ", byte);
     std::cout << "\n";
@@ -103,7 +110,7 @@ FileResult readBinaryFromWebSocket(dataTransaction &tx, std::vector<uint8_t>& _b
 } // namespace data_ops
 
 
-void handleDataSync(dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer){
+void handleDataSync(dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer){
 using namespace data;
 using namespace data_ops;
 std::error_code ec;
@@ -128,15 +135,15 @@ std::error_code ec;
 
   //NEW FILE CREATION
   case OP::NEW: {
-    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated {}",std::chrono::system_clock::now(),_target));
-    tx.fileResult= (bpy::utility::createEmptyFile(_target))? FileResult::SUCCESS : FileResult::OPEN_FAILURE;
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Creation processing initiated {}",std::chrono::system_clock::now(),*_target));
+    tx.fileResult= (bpy::utility::createEmptyFile(*_target))? FileResult::SUCCESS : FileResult::OPEN_FAILURE;
     tx.status = (tx.fileResult == FileResult::SUCCESS)? Result::SUCCESS : Result::FAILURE;
     break;
   }
 
   case OP::DEL:
-    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Delete processing initiated for target: {}",std::chrono::system_clock::now(), _target));
-    std::filesystem::remove_all(_target, ec);
+    dataLogBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:Delete processing initiated for target: {}",std::chrono::system_clock::now(), *_target));
+    std::filesystem::remove_all(*_target, ec);
     tx.status = (!ec) ? Result::SUCCESS : Result::FAILURE;
     tx.fileResult = (tx.status == Result::SUCCESS)? FileResult::SUCCESS : FileResult::UNKNOWN_ERROR;
     break;
@@ -152,7 +159,7 @@ std::error_code ec;
     tx.fileResult = readBinaryFile(tx, _target, _buffer);
     if (tx.fileResult == FileResult::SUCCESS){
       tx.fileResult = data_ops::writeBinaryFile(tx, _target, _buffer);
-      std::filesystem::remove_all(_target, ec);}
+      std::filesystem::remove_all(*_target, ec);}
     else{tx.status = (!ec && tx.fileResult==FileResult::SUCCESS) ? Result::SUCCESS : Result::FAILURE;}
     break;
   

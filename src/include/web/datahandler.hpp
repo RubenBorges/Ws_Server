@@ -79,13 +79,14 @@ extern data::dataTransaction ThisDataTransaction;
 
 namespace data_ops {
 using namespace data;
-FileResult readBinaryFile           (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult writeBinaryFile          (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult appendBinaryFile         (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult writeToFile              (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult appendFile               (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
-FileResult sendBinaryToStdout       (const dataTransaction& tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+FileResult readBinaryFile           (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult writeBinaryFile          (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult appendBinaryFile         (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult writeToFile              (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult appendFile               (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult sendBinaryToStdout       (const dataTransaction& tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
+FileResult moveFile                 (const dataTransaction &tx, const std::filesystem::path*_targetS, std::vector<uint8_t>& _buffer);
 FileResult sendBinaryToWebSocket    (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
 FileResult readBinaryFromWebSocket  (const dataTransaction& tx, std::vector<uint8_t>& _buffer);
 } // namespace data_ops
-void handleDataSync(const data::dataTransaction &tx, std::filesystem::path _target, std::vector<uint8_t>& _buffer);
+void handleDataSync(const data::dataTransaction &tx, const std::filesystem::path* _target, std::vector<uint8_t>& _buffer);
