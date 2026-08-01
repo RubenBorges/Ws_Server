@@ -46,8 +46,6 @@ struct session_t {
 };
 
 // Share instances across different code files safely via extern
-extern loginRequest ThisLoginRequest;
-extern session_t session;
 
 namespace account {
 

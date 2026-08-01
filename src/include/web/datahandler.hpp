@@ -76,13 +76,14 @@ public:
 
 struct DataProcessor{
     std::filesystem::path target;
-    std::vector<uint8_t> buffer{0};
+    std::vector<uint8_t>* buffer;
     std::filesystem::path dest{""};
 };
 
 struct dataTransaction {
   OP cmd;
   ws_stream& ws;
+  DataProcessor data;
   FileResult fileResult{FileResult::PENDING};
   Result status{Result::PENDING};
   };
@@ -91,14 +92,14 @@ struct dataTransaction {
 
 namespace data_ops {
 using namespace data;
-FileResult readBinaryFile           (dataTransaction& tx, DataProcessor& data);
-FileResult writeBinaryFile          (dataTransaction& tx, DataProcessor& data);
-FileResult appendBinaryFile         (dataTransaction& tx, DataProcessor& data);
-FileResult writeToFile              (dataTransaction& tx, DataProcessor& data);
-FileResult appendFile               (dataTransaction& tx, DataProcessor& data);
-FileResult moveFile                 (dataTransaction& tx, DataProcessor& data);
-FileResult sendBinaryToStdout       (dataTransaction& tx, DataProcessor& data);
-FileResult sendBinaryToWebSocket    (dataTransaction& tx, DataProcessor& data);
-FileResult readBinaryFromWebSocket  (dataTransaction& tx, DataProcessor& data);
+FileResult readBinaryFile           (dataTransaction& tx);
+FileResult writeBinaryFile          (dataTransaction& tx);
+FileResult appendBinaryFile         (dataTransaction& tx);
+FileResult writeToFile              (dataTransaction& tx);
+FileResult appendFile               (dataTransaction& tx);
+FileResult moveFile                 (dataTransaction& tx);
+FileResult sendBinaryToStdout       (dataTransaction& tx);
+FileResult sendBinaryToWebSocket    (dataTransaction& tx);
+FileResult readBinaryFromWebSocket  (dataTransaction& tx);
 } // namespace data_ops
-void handleDataSync(data::dataTransaction &tx,data::DataProcessor& data);
+void handleDataSync(data::dataTransaction &tx);

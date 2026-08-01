@@ -1,3 +1,4 @@
+#include "web/loginhandler.hpp"
 #include "web/datahandler.hpp"
 #include <BPY/util.hpp>
 #include <boost/asio.hpp>
@@ -8,6 +9,8 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <string>
+#include <vector>
 #include <web/client.hpp>
 #include <web/server.hpp>
 #include <boost/beast/core.hpp>
@@ -26,10 +29,6 @@ using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 
-using LoginFuncPtr = void(*)(loginRequest&);
-using DataFuncPtr  = void(*)(data::dataTransaction&,data::DataProcessor&);
-using FastFuncVariant = std::variant<LoginFuncPtr, DataFuncPtr>;
-
 // ==========================================
 // 3. Main Test Suite
 // ==========================================
@@ -44,19 +43,18 @@ int main() {
     //p2p::web::ServerOptions serverOptions{clientOptions.port};
     //p2p::web::AsyncEchoServer aServer(WebSock.IO(), serverOptions);
     
-
-    RequestVariant loginPayload = myLogin; 
-   
-
-    using namespace data;
-    dataTransaction dataReq{OP::CP, WebSock.ws};
-    RequestVariant dataPayload = dataReq;
-    DataProcessor dat {"targ.ta", {0}, "dest"};
     
-    // router::visit(loginPayload, dat); // CRITICAL: This is how you execute the login pipeline natively
-    // router::visit(dataPayload, dat); // CRITICAL: This is how you execute the data pipeline natively
-//router::visit(loginFnPtr, loginPayload, dat);
-//router::visit(dataFnPtr, dataPayload, dat);
-    // REMOVED: dispatch() and manual FastFuncVariant pointer wrappers are wiped away!
+    RequestVariant loginPayload = myLogin; 
+  dispatch(RequestType::LOGIN, loginPayload);
+   
+  std::filesystem::path targt {"/home/boopy/dev/Projects/ws_server/out/out"};
+  std::filesystem::path dest {"/home/boopy/dev/Projects/ws_server/out/copy"};
+  std::vector<uint8_t> buffer;
+    //DataProcessor dat {"targ.ta", {0}, "dest"};
+    data::dataTransaction dataReq{data::OP::CP, WebSock.ws, data::DataProcessor{targt, &buffer, dest}};
+    RequestVariant dataPayload = dataReq;
+      dispatch(RequestType::DATA, dataPayload);
+    
+
     return 0;
 }

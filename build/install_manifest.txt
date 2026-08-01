@@ -1,0 +1,2 @@
+/home/boopy/dev/Projects/ws_server/dist/bin/ws_test
+/home/boopy/dev/Projects/ws_server/dist/bin/ws_test
