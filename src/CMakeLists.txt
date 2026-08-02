@@ -4,7 +4,6 @@ set(WEB_SOURCES
     RequestRouter/loginhandler.cpp
     RequestRouter/datahandler.cpp
     RequestRouter/router.cpp
-    log.cpp
 )
 set(BP_SOURCES
     BPY/DirectoryCrawler/DirectoryCrawler.cpp
