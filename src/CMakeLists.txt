@@ -1,6 +1,6 @@
 set(WEB_SOURCES
-    RequestRouter/server.cpp
-    RequestRouter/client.cpp
+    web/server.cpp
+    web/client.cpp
     RequestRouter/loginhandler.cpp
     RequestRouter/datahandler.cpp
     RequestRouter/router.cpp
