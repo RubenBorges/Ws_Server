@@ -3,7 +3,6 @@
 #include <atomic>
 #include <memory>
 #include <string>
-#include <RequestRouter/router.hpp>
 namespace p2p::web {
 
 namespace asio = boost::asio;
