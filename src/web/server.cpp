@@ -6,9 +6,6 @@
 #include <iostream>
 #include <string>
 #include <utility>
-extern std::vector<std::string> dataLogBuilder;
-extern std::vector<std::string> activeServerFilePaths;
-extern data::dataTransaction ThisDataTransaction;
 
 
 namespace p2p::web {
