@@ -1,10 +1,8 @@
 #include <BPY/util.hpp>
 #include <cstdlib>
-#include <web/datahandler.hpp>
-#include <web/loginhandler.hpp>
 #include <web/router.hpp>
-#include <web/log.hpp>
 #include <sys/types.h>
+#include <log.hpp>
 
 using RequestVariant = std::variant<loginRequest, data::dataTransaction>;
 

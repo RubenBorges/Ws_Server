@@ -6,7 +6,6 @@
 #include <boost/beast/websocket/stream.hpp>
 #include <cstdint>
 #include <web/client.hpp>
-#include <web/log.hpp>
 #include <filesystem>
 #include <iostream>
 #include <string>

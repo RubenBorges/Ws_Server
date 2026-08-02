@@ -11,8 +11,7 @@
 #include <iosfwd>
 #include <system_error>
 #include <web/datahandler.hpp>
-#include <web/router.hpp>
-#include <web/log.hpp>
+#include <log.hpp>
 #include <fstream>
 #include <iostream>
 #include <variant>
