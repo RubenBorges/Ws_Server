@@ -6,6 +6,9 @@
 #include <string>
 #include <utility>
 
+namespace asio = ::boost::asio;
+using tcp = asio::ip::tcp;
+using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
 namespace p2p::web {
 // Constructs the server object, preparing the acceptor and storing the server options.
