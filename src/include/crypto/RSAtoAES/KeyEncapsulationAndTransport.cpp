@@ -10,15 +10,15 @@
 
 int main (){
 //THE ASSYMETRIC->SYMMETRIC ENCRYPTION/DECRYPTION FLOW
-    //-----ASSUME ALICE INITIATES A REQUEST FOR ENCYPTED CHAT COMMUNICATION WITH BOB-----
-    //-----BOB PRODUCES ASSYMETRIC KEY PAIR AND SENDS PUBLIC KEY TO ALICE-----
+    //-----CLIENT INITIATES A REQUEST FOR ENCYPTED CHAT COMMUNICATION WITH SERVER-----
+    //-----SERVER PRODUCES ASSYMETRIC KEY PAIR AND SENDS ITS PUBLIC KEY TO CLIENT-----
     std::string SecretSymmeticKey = "SecretPassword123";
     auto keyPair = crypt::GenKeyPair();
     std::cout<< "Generated RSA Key Pair:\n";
     std::cout << " > Public Key: " << keyPair->first << "\n";
     std::cout << " > Private Key:  " << keyPair->second << "\n\n";
 
-    //-----ALICE USES BOB'S PUBLIC KEY TO ENCRYPT A SYMMETRIC KEY AND SENDS IT BACK TO BOB-----
+    //-----CLIENT USES SERVER'S PUBLIC KEY TO ENCRYPT A SYMMETRIC KEY AND SENDS IT BACK TO SERVER-----
     std::vector<unsigned char> encryptedMessage = *crypt::RsaEncryption(keyPair->first, SecretSymmeticKey);
     std::cout << "Encrypted Symmetric Key: ";
     for (const auto& byte : encryptedMessage) {
@@ -27,10 +27,10 @@ int main (){
     std::cout << std::dec << std::endl;
 
 
-    //-----BOB USES HIS PRIVATE KEY TO DECRYPT THE SYMMETRIC KEY SENT BY ALICE-----
+    //-----SERVER USES HIS PRIVATE KEY TO DECRYPT THE SYMMETRIC KEY SENT BY CLIENT-----
     std::string const SymmetricKey = *crypt::RsaDecryption(keyPair->second, encryptedMessage);
 
-    //-----BOB NOW HAS THE SYMMETRIC KEY AND CAN USE IT FOR FURTHER ENCRYPTED COMMUNICATION-----
+    //-----SERVER AND CLIENT NOW HAVE THE SAME SYMMETRIC KEY AND CAN USE IT FOR EFFICIENT ENCRYPTED COMMUNICATION-----
     std::cout << "Decrypted Symmetric Key: " << SymmetricKey << std::endl;  
     
     return EXIT_SUCCESS;

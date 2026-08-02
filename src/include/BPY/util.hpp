@@ -1,7 +1,7 @@
 #pragma once
 
-#include <web/datahandler.hpp>
-#include <web/loginhandler.hpp>
+#include <RequestRouter/datahandler.hpp>
+#include <RequestRouter/loginhandler.hpp>
 #include <algorithm> 
 #include <cerrno>    
 #include <concepts>
@@ -20,12 +20,6 @@
 #include <type_traits>
 
 namespace bpy {
-
-// Relocated structural mocks to top for cleaner forward-declaration resolution
-struct loginRequest {};
-namespace data { 
-    struct dataTransaction {}; 
-}
 
 namespace utility {
 

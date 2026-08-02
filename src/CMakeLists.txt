@@ -1,9 +1,9 @@
 set(WEB_SOURCES
-    web/server.cpp
-    web/client.cpp
-    web/loginhandler.cpp
-    web/datahandler.cpp
-    web/router.cpp
+    RequestRouter/server.cpp
+    RequestRouter/client.cpp
+    RequestRouter/loginhandler.cpp
+    RequestRouter/datahandler.cpp
+    RequestRouter/router.cpp
 )
 set(BP_SOURCES
     BPY/DirectoryCrawler/DirectoryCrawler.cpp
@@ -29,8 +29,8 @@ find_package(Boost REQUIRED COMPONENTS random CONFIG)
 #    client_main.cpp
 #    ${WEB_SOURCES}
 #)
-add_executable(ws_test
-    data.cpp
+add_executable(test
+    main.cpp
     ${WEB_SOURCES}
     ${BP_SOURCES}
 )
@@ -47,9 +47,8 @@ add_executable(ws_test
  #   ${CMAKE_CURRENT_SOURCE_DIR}/include/extern
 #)
 
-target_include_directories(ws_test PRIVATE
+target_include_directories(test PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/BPY
     ${CMAKE_CURRENT_SOURCE_DIR}/include/extern  
 )
 
@@ -69,7 +68,7 @@ target_include_directories(ws_test PRIVATE
      #   Boost::random
 #)
 
-target_link_libraries(ws_test
+target_link_libraries(test
     PRIVATE 
         libpqxx::pqxx
         OpenSSL::SSL
@@ -79,6 +78,6 @@ target_link_libraries(ws_test
 
 #target_compile_options(Ws_server PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)
 #target_compile_options(Ws_client PRIVATE -O2 -Wall -Wextra -Wno-mismatched-new-delete)
-target_compile_options(ws_test PRIVATE -std=c++2c -O3 -Wall -Wextra -Wno-mismatched-new-delete)
+target_compile_options(test PRIVATE -std=c++2c -O3 -Wall -Wextra -Wno-mismatched-new-delete)
 
-install(TARGETS ws_test DESTINATION bin)
+install(TARGETS test DESTINATION bin)

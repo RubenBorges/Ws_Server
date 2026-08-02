@@ -16,7 +16,8 @@
 
 int main() {
     namespace asio = boost::asio;
-namespace web = p2p::web;
+    namespace web = p2p::web;
+    
 //SERVER SIDE
     asio::io_context server_io(1);
     auto server = web::make_server(server_io, web::ServerOptions{4544});
