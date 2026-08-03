@@ -1,9 +1,7 @@
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <string_view>
-#include <stdexcept>
-#include <system_error>
+#include <fstream>
 
 #ifdef _WIN32
 #include <windows.h>

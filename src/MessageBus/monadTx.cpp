@@ -1,4 +1,5 @@
-#include "stdinc.hpp"
+#include <iostream>
+#include <optional>
 
 struct transaction {
     int id;
@@ -7,7 +8,6 @@ struct transaction {
 };
 
   // --- Monadic API Functions ---
-
   // Sources: Return optional to represent "Found" or "Not Found"
 std::optional<transaction> fetchFrom_Cache(const transaction& tx) {
       // Logic: If not in cache, return nullopt to trigger or_else
