@@ -9,10 +9,12 @@
 #include <cstring> 
 #include <fcntl.h> 
 #include <iostream>
+#include <openssl/rand.h>
 #include <random>
 #include <sys/stat.h>
 #include <sys/syscall.h> 
 #include <fstream>
+#include <sstream>
 #include <unistd.h>
 #include <boost/asio/io_context.hpp>
 #include <memory>
@@ -91,6 +93,32 @@ T getRandomNumber(T x, T y) {
         return static_cast<T>(dist(gen));
     }
 }
+
+std::string print_hex(std::string_view label, const std::vector<uint8_t>& buf) {
+    std::stringstream ss;
+    std::ios_base::fmtflags f(std::cout.flags()); // Save stream state
+
+    for (const auto& byte : buf) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
+    }
+
+    ss.flags(f); // Restore stream state
+    return ss.str();
+}
+
+// Generates a random 32-byte (256-bit) AES key
+std::vector<uint8_t> generate_aes_256_key() {
+    constexpr size_t key_size = 32; // 32 bytes = 256 bits
+    std::vector<uint8_t> key(key_size);
+
+    // RAND_bytes returns 1 on success, 0 or negative on failure
+    if (RAND_bytes(key.data(), key_size) != 1) {
+        throw std::runtime_error("CSPRNG failure: Failed to generate a secure random AES key.");
+    }
+
+    return key;
+}
+
 
 } // namespace utility
 } // namespace bpy

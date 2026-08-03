@@ -29,6 +29,7 @@ using tcp = asio::ip::tcp;
 using ws_stream = boost::beast::websocket::stream<tcp::socket>;
 
 RequestVariant req;
+
 namespace data_ops {
 FileResult readBinaryFile(dataTransaction &tx) {
     const auto &filePath = tx.data.target;
@@ -37,8 +38,9 @@ FileResult readBinaryFile(dataTransaction &tx) {
     if (!std::filesystem::is_regular_file(filePath)) {
         std::println(std::cerr, "Path is not a valid file: {}", filePath);
         logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Path is not a valid File [{}].",  std::chrono::system_clock::now(), filePath));
+      
         return FileResult::NOT_FOUND; 
-    }
+      }
 
     // Fetch file size reliably using OS Metadata (Bypasses stream open errors)
     std::error_code ec;
@@ -47,23 +49,26 @@ FileResult readBinaryFile(dataTransaction &tx) {
     if (ec) {
         std::println(std::cerr, "OS blocked reading file size metadata: {}", ec.message());
         logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Metadata Read Failure [{}].",  std::chrono::system_clock::now(), filePath));
+       
         return FileResult::OPEN_FAILURE; // OS level block (Permissions/Sharing violation)
-    }
+      }
 
     if (exactSize == 0) {
         tx.data.buffer->clear();
         std::println("READING FILE: {} [0 bytes]", filePath);
         logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Successfully Read (Empty) [{}].", std::chrono::system_clock::now(), filePath));
+        
         return FileResult::SUCCESS;
-    }
+      }
 
     // Open File Stream normally
     std::ifstream file(filePath, std::ios::binary);
     if (!file.is_open()) {
         std::println(std::cerr, "Failed to open file stream: {}", filePath);
         logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:Failed to open File Stream [{}].", std::chrono::system_clock::now(), filePath));
+    
         return FileResult::OPEN_FAILURE;
-    }
+      }
 
     // Perform allocations safely
     tx.data.buffer->resize(static_cast<std::size_t>(exactSize));
@@ -75,6 +80,7 @@ FileResult readBinaryFile(dataTransaction &tx) {
         }
         std::println(""); 
         logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- NOTIFY:File Successfully Read [{}].", std::chrono::system_clock::now(), filePath));
+        
         return FileResult::SUCCESS;
     }
 
@@ -103,8 +109,8 @@ FileResult appendBinaryFile(dataTransaction &tx) {
       return FileResult::OPEN_FAILURE;
     }
 
-    outputFile.write(reinterpret_cast<const char*>(tx.data.buffer->data()), tx.data.buffer->size());
-    return outputFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
+  outputFile.write(reinterpret_cast<const char*>(tx.data.buffer->data()), tx.data.buffer->size());
+  return outputFile.good() ? FileResult::SUCCESS : FileResult::WRITE_FAILURE;
 }
 
 FileResult writeToFile(dataTransaction &tx) {
@@ -182,9 +188,9 @@ FileResult readBinaryFromWebSocket(dataTransaction &tx) {
       logBuilder.push_back(std::format("T:{:%Y-%m-%d %H:%M:%S} -- ERROR:WebSocket is not open.", std::chrono::system_clock::now()));
       return FileResult::READ_FAILED;
     }
-
-    boost::beast::flat_buffer dynamic_buffer;
     boost::beast::error_code ec;
+    boost::beast::flat_buffer dynamic_buffer;
+
     tx.ws.binary(true);
     tx.ws.read(dynamic_buffer);
     if (ec) {

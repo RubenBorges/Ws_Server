@@ -1,4 +1,5 @@
-#pragma once
+#ifndef STDINC_HPP
+#define STDINC_HPP
 #include <iostream>
 #include <print>
 #include <vector>
@@ -7,12 +8,13 @@
 #include <string>
 #include <algorithm>
 #include <string_view>
-#include <numeric>
+#include <numeric> // Cleaned up your duplicate
 #include <ranges>
-#include <numeric>
 #include <functional>
 #include <optional>
 #include <variant>
 #include <any>
 #include <expected>
 #include <memory>
+
+#endif
