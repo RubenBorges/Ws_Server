@@ -140,7 +140,7 @@ public:
 /*-------------------------------\\
 || 7. Execution Demo             ||
 \\-------------------------------*/
-int main() {
+int SampleUsage() {
     std::cout << "Complete Design with Automated Type Selection\n" << std::endl;
 
     // 1. Automatic Type Evaluation via Factory & decltype
